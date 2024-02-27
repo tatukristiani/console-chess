@@ -1,4 +1,7 @@
-﻿namespace console_chess
+﻿using console_chess.ChessPieces;
+using console_chess.Board;
+
+namespace console_chess
 {
     internal class Program
     {
@@ -6,12 +9,7 @@
         {
             // TODO: Create chess board
             ChessBoard board = new ChessBoard();
-            board.PrintBoard();
-
-            // Matriisi, array, 
-
-
-            // TODO: Add chess pieces to board
+            board.PrintBoardWithCodes();
 
         }
     }
