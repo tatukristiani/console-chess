@@ -10,12 +10,40 @@ namespace console_chess.Board
     public class ChessBoard
     {
         private Dictionary<Position, AChessPiece?> ChessPiecePositions;
+        private Position currentHighlightedPosition;
 
         public ChessBoard()
         {
             this.ChessPiecePositions = Populate();
         }
 
+        public bool MoveChessPieceOnBoard(AChessPiece piece, Position originalPosition, Position newPosition)
+        {
+            // Find chess piece on the board to move
+            AChessPiece? pieceToMove = ChessPiecePositions[originalPosition];
+
+            // Check if the chess piece was found = valid input
+            if(pieceToMove != null )
+            {
+                ChessPiecePositions[newPosition] = pieceToMove;
+                ChessPiecePositions[originalPosition] = null;
+                return true;
+                
+            }
+
+            return false;
+
+        }
+
+        public void ChoosePieceToMove(Position originalPosition)
+        {
+            PrintBoardWithCodes(originalPosition);
+        }
+
+        public AChessPiece GetChessPiece(Position position)
+        {
+            return ChessPiecePositions[position];
+        }
         // Populates the chess board positions with Chess Pieces
         private static Dictionary<Position, AChessPiece?> Populate()
         {
@@ -33,24 +61,39 @@ namespace console_chess.Board
         }
 
         // Prints the current chess board with chess piece code values
-        public void PrintBoardWithCodes()
+        // TODO: Add chess pieces move pattern to board
+        public void PrintBoardWithCodes(Position? highlightedPosition)
         {
+            int rowCount = 8;
             Console.Clear();
-            Console.WriteLine("+----+----+----+----+----+----+----+----+");
+            Console.WriteLine("     A     B     C     D     E     F     G     H   ");
+            Console.WriteLine("  +-----+-----+-----+-----+-----+-----+-----+-----+");
             foreach (var position in ChessPiecePositions)
             {
-                if (PositionIsFirstOfTheRow(position.Key)) Console.Write("|");
+                if (PositionIsFirstOfTheRow(position.Key))
+                {
+                    Console.Write($"{rowCount} |");
+                }
 
-                if (position.Value == null || position.Value.Code > 0) Console.Write($"  {(position.Value == null ? 0 : position.Value.Code)} ");
-                else Console.Write($" {position.Value.Code} ");
+                if(highlightedPosition != null && position.Key.Equals(highlightedPosition))
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+
+                if (position.Value == null || position.Value.Code > 0) Console.Write($"  {(position.Value == null ? 0 : position.Value.Code)}  ");
+                else Console.Write($" {position.Value.Code}  ");
+                Console.ForegroundColor = ConsoleColor.White;
                 Console.Write("|");
                 
                 if(PositionIsLastOfTheRow(position.Key))
                 {
+                    Console.Write($" {rowCount}");
                     Console.WriteLine();
-                    Console.WriteLine("+----+----+----+----+----+----+----+----+");
+                    Console.WriteLine("  +-----+-----+-----+-----+-----+-----+-----+-----+");
+                    rowCount--;
                 }
             }
+            Console.WriteLine("     A     B     C     D     E     F     G     H   ");
         }
 
         // Checks if the Position enum is the first of the row (AX)

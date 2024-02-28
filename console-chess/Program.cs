@@ -1,5 +1,6 @@
 ﻿using console_chess.ChessPieces;
 using console_chess.Board;
+using console_chess.Game;
 
 namespace console_chess
 {
@@ -7,9 +8,9 @@ namespace console_chess
     {
         static void Main(string[] args)
         {
-            // TODO: Create chess board
-            ChessBoard board = new ChessBoard();
-            board.PrintBoardWithCodes();
+            AGame game = new PlayerVsPlayerGame();
+
+            game.StartGame();
 
         }
     }
