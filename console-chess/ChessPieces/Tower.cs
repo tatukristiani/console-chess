@@ -1,4 +1,5 @@
-﻿using System;
+﻿using console_chess.Board;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,11 @@ namespace console_chess.ChessPieces
     {
         public Tower(int code) : base(code)
         {
+        }
+
+        public override bool IsValidMove(Position currentPosition, Position newPosition)
+        {
+            throw new NotImplementedException();
         }
 
         public override void Move()

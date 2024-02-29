@@ -11,6 +11,10 @@ namespace console_chess.Game
 {
     public class PlayerVsPlayerGame : AGame
     {
+        public PlayerVsPlayerGame(bool useIcons) : base(useIcons)
+        {
+        }
+
         public override void StartGame()
         {
             // Create players
@@ -20,8 +24,8 @@ namespace console_chess.Game
             while(true)
             {
                 // Update chess board
-                base.chessBoard.PrintBoardWithCodes(null);
-
+                base.chessBoard.UpdateChessBoard(null);
+               
                 // Print last move
                 base.PrintLastMove();
 
@@ -44,7 +48,7 @@ namespace console_chess.Game
 
                         Console.Write("Confirm Piece to Move (Y/N): ");
                         lockMove = Console.ReadLine();
-                        if (lockMove == null || !lockMove.Equals("Y", StringComparison.OrdinalIgnoreCase)) base.chessBoard.PrintBoardWithCodes(null);
+                        if (lockMove == null || !lockMove.Equals("Y", StringComparison.OrdinalIgnoreCase)) base.chessBoard.UpdateChessBoard(null);
                     }
 
                 }

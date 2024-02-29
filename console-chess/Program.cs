@@ -1,6 +1,7 @@
 ﻿using console_chess.ChessPieces;
 using console_chess.Board;
 using console_chess.Game;
+using System.Text;
 
 namespace console_chess
 {
@@ -8,7 +9,9 @@ namespace console_chess
     {
         static void Main(string[] args)
         {
-            AGame game = new PlayerVsPlayerGame();
+            Console.OutputEncoding = Encoding.Unicode;
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            AGame game = new PlayerVsPlayerGame(false);
 
             game.StartGame();
 

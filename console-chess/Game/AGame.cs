@@ -17,9 +17,9 @@ namespace console_chess.Game
         protected APlayer currentTurnPlayer;
         protected List<string> moveHistory = new List<string>();
 
-        public AGame()
+        public AGame(bool useIcons)
         {
-            this.chessBoard = new ChessBoard();
+            this.chessBoard = new ChessBoard(useIcons);
         }
 
         public abstract void StartGame();
