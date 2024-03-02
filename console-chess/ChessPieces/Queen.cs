@@ -13,7 +13,7 @@ namespace console_chess.ChessPieces
         {
         }
 
-        public override bool IsValidMove(Position currentPosition, Position newPosition)
+        public override bool IsValidMove(Position currentPosition, Position newPosition, Dictionary<Position, AChessPiece?> chessPieceBoard)
         {
             throw new NotImplementedException();
         }

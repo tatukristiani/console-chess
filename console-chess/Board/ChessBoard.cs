@@ -13,7 +13,7 @@ namespace console_chess.Board
     public class ChessBoard
     {
         // Dictionary that holds the chessboard positions and chess pieces on them
-        private Dictionary<Position, AChessPiece?> ChessPiecePositions;
+        public Dictionary<Position, AChessPiece?> ChessPiecePositions;
         private bool UseIcons;
 
         /// <summary>
@@ -227,9 +227,16 @@ namespace console_chess.Board
             return lastPositions.Contains(position);
         }
 
+        /// <summary>
+        /// Checks if the position would be on the path of the chess piece
+        /// </summary>
+        /// <param name="piece">Chess piece which pattern to check</param>
+        /// <param name="currentChessPiecePosition">Current position of the chess piece</param>
+        /// <param name="possibleNewChessPiecePosition">New position which to check if its on the path of the chess piece</param>
+        /// <returns>bool true when possibleNewChessPiecePosition is on the path, false otherwise</returns>
         private bool PositionIsInsideOfChessPiecePattern(AChessPiece piece, Position currentChessPiecePosition, Position possibleNewChessPiecePosition)
         {
-            return piece.IsValidMove(currentChessPiecePosition, possibleNewChessPiecePosition);
+            return piece.IsValidMove(currentChessPiecePosition, possibleNewChessPiecePosition,ChessPiecePositions);
         }
     }
 }

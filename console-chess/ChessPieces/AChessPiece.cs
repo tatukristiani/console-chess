@@ -76,7 +76,7 @@ namespace console_chess.ChessPieces
         }
 
 
-        public abstract bool IsValidMove(Position currentPosition, Position newPosition);
+        public abstract bool IsValidMove(Position currentPosition, Position newPosition, Dictionary<Position, AChessPiece?> chessPieceBoard);
         public abstract void Move();
         public abstract void Print();
 

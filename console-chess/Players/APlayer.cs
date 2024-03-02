@@ -12,11 +12,13 @@ namespace console_chess.Players
     {
         public string Name { get; set; }
         public ChessBoard board;
+        public Color Color { get; set; }
 
-        public APlayer(string name, ChessBoard board)
+        public APlayer(string name, ChessBoard board, Color color)
         {
             Name = name;
             this.board = board;
+            Color = color;
         }
 
         public abstract bool Move(AChessPiece piece, Position originalPosition, Position newPosition);

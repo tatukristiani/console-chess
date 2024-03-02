@@ -10,12 +10,10 @@ namespace console_chess.Players
 {
     public class RealPlayer : APlayer
     {
-        private AChessPiece pieceToMove;
-        public RealPlayer(string name, ChessBoard board) : base(name, board) { }
+        public RealPlayer(string name, ChessBoard board, Color color) : base(name, board, color) { }
 
         public override void ChoosePieceToMove(AChessPiece piece, Position originalPosition)
         {
-            pieceToMove = piece;
             base.board.ChoosePieceToMove(originalPosition);
         }
 
