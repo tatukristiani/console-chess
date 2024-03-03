@@ -1,4 +1,5 @@
 ﻿using console_chess.Board;
+using console_chess.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,14 @@ namespace console_chess.ChessPieces
             6, -6, 10, -10, 15, -15, 17, -17
         };
 
+        /*
+         * AlphaIndex difference can be 2 MAX
+         * A1 & A8 | H1 & H8: 2 possible moves
+         * A2 & A7 | H2 & H7: 3 possible moves
+         * A6 - A3 | H6 - H3: 4 possible moves
+         * B1
+         * 
+         */
         public Knight(int code) : base(code)
         {
         }
@@ -40,7 +49,7 @@ namespace console_chess.ChessPieces
             AChessPiece? pieceOnNewPos = chessPieceBoard[newPosition];
             bool pieceOnPosIsNotOwn = pieceOnNewPos == null || (pieceOnNewPos != null && pieceOnNewPos.Color != base.Color);
 
-            return possibleDifferences.Contains(positionDifference) && pieceOnPosIsNotOwn;
+            return possibleDifferences.Contains(positionDifference) && pieceOnPosIsNotOwn && Math.Abs(AlphabetIndex.GetIndex(newPosition) - AlphabetIndex.GetIndex(currentPosition)) <= 2;
         }
 
         public override void Move()

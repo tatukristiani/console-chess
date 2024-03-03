@@ -9,12 +9,6 @@ using unit_test_console_chess.TestDataGenerators;
 
 namespace unit_test_console_chess.UnitTests.ChessPieceTests
 {
-    // TODO: Add testcases for these and fix logic
-    /*
-     * A1, nyt voi liikkua H3 (valkonen)
-     * H3, nyt voi liikkua B1, B3 ja A4 (valkonen)
-     * G7, nyt voi liikkua A6 (musta)
-     */
     public class KnightTest
     {
         [Theory]

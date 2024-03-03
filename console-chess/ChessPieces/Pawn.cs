@@ -37,25 +37,25 @@ namespace console_chess.ChessPieces
                 if (currentPosition.ToString().Contains("2"))
                 {
                     // Pawn is on the left most position
-                    if (currentPosition.ToString().Contains("A2")) return ValidateSidePawnMove(chessPieceOnNewPosition, positionDifference, -7, true);
+                    if (currentPosition.ToString().Contains("A2")) return ValidateSidePawnMove(chessPieceBoard, currentPosition, newPosition, -7, true);
 
                     // Pawn is on the right most position
-                    else if (currentPosition.ToString().Contains("H2")) return ValidateSidePawnMove(chessPieceOnNewPosition, positionDifference, -9, true);
+                    else if (currentPosition.ToString().Contains("H2")) return ValidateSidePawnMove(chessPieceBoard, currentPosition, newPosition, -9, true);
                     
                     // Pawn is not on the right/left most position
-                    return ValidateNormalMove(chessPieceOnNewPosition, positionDifference, true);
+                    return ValidateNormalMove(chessPieceBoard, newPosition, currentPosition, true);
                 }
                 // Pawn has moved at least once
                 else
                 {
                     // Pawn is on the left most position
-                    if (currentPosition.ToString().Contains("A")) return ValidateSidePawnMove(chessPieceOnNewPosition, positionDifference, -7, false);
+                    if (currentPosition.ToString().Contains("A")) return ValidateSidePawnMove(chessPieceBoard, currentPosition, newPosition, - 7, false);
                     
                     // Pawn is on the right most position
-                    else if (currentPosition.ToString().Contains("H")) return ValidateSidePawnMove(chessPieceOnNewPosition, positionDifference, -9, false);
+                    else if (currentPosition.ToString().Contains("H")) return ValidateSidePawnMove(chessPieceBoard, currentPosition, newPosition, -9, false);
                     
                     // Pawn is not on the right/left most position
-                    return ValidateNormalMove(chessPieceOnNewPosition, positionDifference, false);
+                    return ValidateNormalMove(chessPieceBoard, newPosition, currentPosition, false);
                 }
 
 
@@ -68,24 +68,24 @@ namespace console_chess.ChessPieces
                 if (currentPosition.ToString().Contains("7"))
                 {
                     // Pawn is on the left most position
-                    if (currentPosition.ToString().Contains("A7")) return ValidateSidePawnMove(chessPieceOnNewPosition, positionDifference, 9, true);
+                    if (currentPosition.ToString().Contains("A7")) return ValidateSidePawnMove(chessPieceBoard, currentPosition, newPosition, 9, true);
                     
                     // Pawn is on the right most position
-                    else if (currentPosition.ToString().Contains("H7")) return ValidateSidePawnMove(chessPieceOnNewPosition, positionDifference, 7, true);
+                    else if (currentPosition.ToString().Contains("H7")) return ValidateSidePawnMove(chessPieceBoard, currentPosition, newPosition, 7, true);
 
                     // Pawn is not on the right/left most position
-                    return ValidateNormalMove(chessPieceOnNewPosition, positionDifference, true);
+                    return ValidateNormalMove(chessPieceBoard, newPosition, currentPosition, true);
                 }
                 else
                 {
                     // Pawn is on the left most position
-                    if (currentPosition.ToString().Contains("A")) return ValidateSidePawnMove(chessPieceOnNewPosition, positionDifference, 9, false);
+                    if (currentPosition.ToString().Contains("A")) return ValidateSidePawnMove(chessPieceBoard, currentPosition, newPosition, 9, false);
                     
                     // Pawn is on the right most position
-                    else if (currentPosition.ToString().Contains("H")) return ValidateSidePawnMove(chessPieceOnNewPosition, positionDifference, 7, false);
+                    else if (currentPosition.ToString().Contains("H")) return ValidateSidePawnMove(chessPieceBoard,currentPosition, newPosition, 7, false);
 
                     // Pawn is not on the right/left most position
-                    return ValidateNormalMove(chessPieceOnNewPosition, positionDifference, false);
+                    return ValidateNormalMove(chessPieceBoard, newPosition, currentPosition, false);
                 }
             }
                
@@ -103,25 +103,26 @@ namespace console_chess.ChessPieces
         /// <param name="validPositionDifferenceToEat">int number indicating whether its valid to eat sideways to right or left</param>
         /// <param name="pawnNotMovedYet">bool true when pawn has not moved yet, false otherwise</param>
         /// <returns>bool true when move is valid, false otherwise</returns>
-        private bool ValidateSidePawnMove(AChessPiece? chessPieceOnNewPosition, int positionDifference, int validPositionDifferenceToEat, bool pawnNotMovedYet)
+        private bool ValidateSidePawnMove(Dictionary<Position, AChessPiece?> chessBoard, Position currentPosition, Position newPosition, int validPositionDifferenceToEat, bool pawnNotMovedYet)
         {
+            int positionDifference = newPosition - currentPosition;
             int oneForward = base.Color.Equals(Color.Black) ? 8 : -8;
             int twoForward = base.Color.Equals(Color.Black) ? 16 : -16;
 
             if (pawnNotMovedYet)
             {
                 return
-                    (positionDifference == oneForward && chessPieceOnNewPosition == null)
+                    (positionDifference == oneForward && chessBoard[newPosition] == null)
                     ||
-                    (positionDifference == twoForward && chessPieceOnNewPosition == null)
+                    (positionDifference == twoForward && chessBoard[newPosition] == null && chessBoard[currentPosition + oneForward] == null)
                     ||
-                    (positionDifference == validPositionDifferenceToEat && (chessPieceOnNewPosition != null && chessPieceOnNewPosition.Color != base.Color));
+                    (positionDifference == validPositionDifferenceToEat && (chessBoard[newPosition] != null && chessBoard[newPosition].Color != base.Color));
             }
 
             return
-                    (positionDifference == oneForward && chessPieceOnNewPosition == null)
+                    (positionDifference == oneForward && chessBoard[newPosition] == null)
                     ||
-                    (positionDifference == validPositionDifferenceToEat && (chessPieceOnNewPosition != null && chessPieceOnNewPosition.Color != base.Color))
+                    (positionDifference == validPositionDifferenceToEat && (chessBoard[newPosition] != null && chessBoard[newPosition].Color != base.Color))
                     ;
 
         }
@@ -133,8 +134,9 @@ namespace console_chess.ChessPieces
         /// <param name="positionDifference">Difference between original position and the new position</param>
         /// <param name="pawnNotMovedYet">bool true when pawn has not moved yet, false otherwise</param>
         /// <returns>bool true when move is valid, false otherwise</returns>
-        private bool ValidateNormalMove(AChessPiece? chessPieceOnNewPosition, int positionDifference, bool pawnNotMovedYet)
+        private bool ValidateNormalMove(Dictionary<Position, AChessPiece?> chessBoard, Position newPosition, Position currentPosition, bool pawnNotMovedYet)
         {
+            int positionDifference = newPosition - currentPosition;
             int oneForward = base.Color.Equals(Color.Black) ? 8 : -8;
             int twoForward = base.Color.Equals(Color.Black) ? 16 : -16;
             int sideWayEatDifferenceOne = base.Color.Equals(Color.Black) ? 7 : -7;
@@ -143,21 +145,21 @@ namespace console_chess.ChessPieces
             if (pawnNotMovedYet)
             {
                 return 
-                    (positionDifference == oneForward && chessPieceOnNewPosition == null)
+                    (positionDifference == oneForward && chessBoard[newPosition] == null)
                     ||
-                    (positionDifference == twoForward && chessPieceOnNewPosition == null)
+                    (positionDifference == twoForward && chessBoard[newPosition] == null && chessBoard[currentPosition + oneForward] == null)
                     ||
-                    (chessPieceOnNewPosition != null && positionDifference == sideWayEatDifferenceOne && chessPieceOnNewPosition.Color != base.Color)
+                    (chessBoard[newPosition] != null && positionDifference == sideWayEatDifferenceOne && chessBoard[newPosition].Color != base.Color)
                     ||
-                    (chessPieceOnNewPosition != null && positionDifference == sideWayEatDifferenceTwo && chessPieceOnNewPosition.Color != base.Color);
+                    (chessBoard[newPosition] != null && positionDifference == sideWayEatDifferenceTwo && chessBoard[newPosition].Color != base.Color);
             }
 
             return
-                    (positionDifference == oneForward && chessPieceOnNewPosition == null)
+                    (positionDifference == oneForward && chessBoard[newPosition] == null)
                     ||
-                    (chessPieceOnNewPosition != null && positionDifference == sideWayEatDifferenceOne && chessPieceOnNewPosition.Color != base.Color)
+                    (chessBoard[newPosition] != null && positionDifference == sideWayEatDifferenceOne && chessBoard[newPosition].Color != base.Color)
                     ||
-                    (chessPieceOnNewPosition != null && positionDifference == sideWayEatDifferenceTwo && chessPieceOnNewPosition.Color != base.Color);
+                    (chessBoard[newPosition] != null && positionDifference == sideWayEatDifferenceTwo && chessBoard[newPosition].Color != base.Color);
 
         }
 

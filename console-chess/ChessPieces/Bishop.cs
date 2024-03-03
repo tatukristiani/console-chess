@@ -1,7 +1,9 @@
 ﻿using console_chess.Board;
+using console_chess.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,6 +31,16 @@ namespace console_chess.ChessPieces
         public override bool IsValidMove(Position currentPosition, Position newPosition, Dictionary<Position, AChessPiece?> chessPieceBoard)
         {
             int positionDifference = newPosition - currentPosition;
+            // 28 DIFF
+
+            // Check if position is on the same row
+            if (currentPosition.ToString().ToCharArray()[1] == newPosition.ToString().ToCharArray()[1]) return false;
+
+            // Check is position is on the same column
+            if(Math.Abs(AlphabetIndex.GetIndex(currentPosition) - AlphabetIndex.GetIndex(newPosition)) == 0) return false;
+
+            // Check that the index difference of the current position and new position matches the position difference
+            if(!PositionDiffMatchesIndexDiff(currentPosition, newPosition)) return false;
             
             // Moving either up or down diagonally from down left to up right
             if(positionDifference % 7 == 0)
@@ -72,7 +84,7 @@ namespace console_chess.ChessPieces
         private bool ValidateMove(Position startingPosition, Position newPosition, int addend, Dictionary<Position, AChessPiece?> board)
         {
             int currentCheckPosition = (int)startingPosition + addend;
-
+            
             if (addend < 0)
             {
                 // Loop while all areas have been checked or enemy is blocking path
@@ -82,6 +94,8 @@ namespace console_chess.ChessPieces
                     if (pieceOnPosition != null && pieceOnPosition.Color == base.Color) return false;
 
                     if (pieceOnPosition != null && pieceOnPosition.Color != base.Color && currentCheckPosition != (int)newPosition) return false;
+
+
                     currentCheckPosition += addend;
                 }
                 return true;
@@ -95,6 +109,49 @@ namespace console_chess.ChessPieces
 
                 if (pieceOnPosition != null && pieceOnPosition.Color != base.Color && currentCheckPosition != (int)newPosition) return false;
                 currentCheckPosition += addend;
+            }
+
+            return true;
+        }
+
+        private bool PositionDiffMatchesIndexDiff(Position originalPosition, Position newPosition)
+        {
+            int positionDiff = newPosition - originalPosition;
+            int positionIndexDiff;
+
+            // Bishop is going down to left or rigth
+            if (positionDiff > 0)
+            {
+                // Check which direction the bishop is going (positive: Right, negative: Left
+                int posIndexDiff = AlphabetIndex.GetIndex(newPosition) - AlphabetIndex.GetIndex(originalPosition);
+
+                // Right down
+                if (posIndexDiff > 0)
+                {
+                    if(posIndexDiff * 9 + originalPosition != newPosition) return false;
+                }
+                // Left down
+                else
+                {
+                    if (posIndexDiff * -1 * 7 + originalPosition != newPosition) return false;
+                } 
+            }
+            // Bishop is going up to left or right
+            else
+            {
+                // Check which direction the bishop is going (positive: Right, negative: Left
+                int posIndexDiff = AlphabetIndex.GetIndex(newPosition) - AlphabetIndex.GetIndex(originalPosition);
+
+                // Right up
+                if (posIndexDiff > 0)
+                {
+                    if (originalPosition - posIndexDiff * 7 != newPosition) return false;
+                }
+                // Left up
+                else
+                {
+                    if (originalPosition - posIndexDiff * -1 * 9 != newPosition) return false;
+                }
             }
 
             return true;

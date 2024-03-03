@@ -5,10 +5,6 @@ using unit_test_console_chess.TestDataGenerators;
 
 namespace unit_test_console_chess.UnitTests.ChessPieceTests
 {
-    // TODO: Add test cases for these and fix logic
-    /*
-     *  B7, nyt voi liikkua vastuksen yli joka on yhden moven p‰‰ss‰ (musta)
-     */
     public class PawnTest
     {
         [Theory]
