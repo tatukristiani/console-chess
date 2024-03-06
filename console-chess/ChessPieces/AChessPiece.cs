@@ -8,7 +8,9 @@ using System.Xml;
 
 namespace console_chess.ChessPieces
 {
-    // Abstract class for chess pieces
+    /// <summary>
+    /// Abstract class for chess pieces
+    /// </summary>
     public abstract class AChessPiece
     {
         public Dictionary<int, Tuple<string, string>> ChessPieceInformation = new Dictionary<int, Tuple<string, string>>()
@@ -27,26 +29,10 @@ namespace console_chess.ChessPieces
             { -6, new Tuple<string, string>("King", "\u265A")}
         };
 
-        /*
-        private Dictionary<int, string> ChessPieceCodes = new Dictionary<int, string>()
-        {
-            { 1, "Pawn" },
-            { 2, "Knight" },
-            { 3, "Bishop" },
-            { 4, "Tower" },
-            { 5, "Queen" },
-            { 6, "King" },
-            { -1, "Pawn" },
-            { -2, "Knight" },
-            { -3, "Bishop" },
-            { -4, "Tower" },
-            { -5, "Queen" },
-            { -6, "King" }
-        };
-        */
+
 
         // Name of the chess piece (King, Pawn etc...)
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /* Code number used to identify the chess piece addition to Name
          * 0 = Empty space (not used here)
@@ -63,10 +49,13 @@ namespace console_chess.ChessPieces
         // White or Black
         public Color Color { get; set; }
 
-        public string Icon { get; set; }
+        public string? Icon { get; set; }
 
 
-        // Constructor. Populate Name and Color with code
+        /// <summary>
+        /// Constructor. Populate Name and Color with code
+        /// </summary>
+        /// <param name="code">Number code of the chess piece. Positive for white, negative for black</param>
         public AChessPiece(int code)
         {
             Code = code;
@@ -75,10 +64,17 @@ namespace console_chess.ChessPieces
             Icon = ChessPieceInformation[code].Item2;
         }
 
+        /// <summary>
+        /// Alternative constructor. Populates Name and code according to color and type of object.
+        /// </summary>
+        /// <param name="color"></param>
+       public AChessPiece(Color color)
+        {
+            Color = color;
+        }
+
 
         public abstract bool IsValidMove(Position currentPosition, Position newPosition, Dictionary<Position, AChessPiece?> chessPieceBoard);
-        public abstract void Move();
-        public abstract void Print();
 
     }
 }

@@ -20,6 +20,14 @@ namespace console_chess.ChessPieces
         {
         }
 
+        public King(Color color) : base(color) 
+        {
+            int code = this.Color == Color.White ? 6 : -6;
+            this.Code = code;
+            this.Name = base.ChessPieceInformation[code].Item1;
+            this.Icon = base.ChessPieceInformation[code].Item2;
+        }
+
         /// <summary>
         /// Validates the move for king
         /// Possible position differences and directions
@@ -46,16 +54,6 @@ namespace console_chess.ChessPieces
 
             return possibleDifferences.Contains(positionDifference) && pieceOnPosIsNotOwn && ( Math.Abs(AlphabetIndex.GetIndex(currentPosition) - AlphabetIndex.GetIndex(newPosition)) <= 1);
             
-        }
-
-        public override void Move()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Print()
-        {
-            throw new NotImplementedException();
         }
     }
 }

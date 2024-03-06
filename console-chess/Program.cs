@@ -11,7 +11,7 @@ namespace console_chess
         {
             Console.OutputEncoding = Encoding.Unicode;
             Console.ForegroundColor = ConsoleColor.DarkRed;
-            AGame game = new PlayerVsPlayerGame(false);
+            AGame game = new PlayerVsPlayerGame(true);
 
             game.StartGame();
 

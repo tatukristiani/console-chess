@@ -53,5 +53,9 @@ namespace console_chess.Game
         {
             moveHistory.Add($"{player.Name} Moved {piece.Name} From {originalPosition} to {newPosition}.");
         }
+
+        public abstract bool IsCheck(APlayer playerWhoMadeTheMove, ChessBoard chessBoard);
+
+        public abstract bool IsCheckMate(APlayer playerWhoMadeTheMove, ChessBoard chessBoard);
     }
 }

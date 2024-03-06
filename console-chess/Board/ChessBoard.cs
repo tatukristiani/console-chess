@@ -14,7 +14,7 @@ namespace console_chess.Board
     {
         // Dictionary that holds the chessboard positions and chess pieces on them
         public Dictionary<Position, AChessPiece?> ChessPiecePositions;
-        private bool UseIcons;
+        private readonly bool UseIcons;
 
         /// <summary>
         /// Constructor populates chessboard with chess pieces
@@ -173,17 +173,30 @@ namespace console_chess.Board
                     Console.Write($"{rowCount} |");
                 }
 
-                // If position param is given & the current position is the param value -> Highlight the chess piece pattern
-                if (highlightedPosition != null && position.Key.Equals(highlightedPosition))
+                // If position param is given & the current position is the param value -> Highlight the chess piece
+                if (highlightedPosition != null)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
+                    if (position.Key.Equals(highlightedPosition))
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                    }
+                    else
+                    {
+                        // Check if the current position is one of the positions of the highlighted chess piece pattern
+                        if (PositionIsInsideOfChessPiecePattern(ChessPiecePositions[(Position)highlightedPosition], (Position)highlightedPosition, position.Key))
+                        {
+                            // Highlight the current position
+                            Console.ForegroundColor = ConsoleColor.Green;
+                        }
+                    }
+
                 }
 
                 // Print the chess icon or empty position
                 string paddingLeft = "  ";
                 string paddingRight = "   ";
 
-                Console.Write($"{paddingLeft}{(position.Value == null ? " " : position.Value.Icon)}{paddingRight}");
+                Console.Write($"{paddingLeft}{(position.Value == null ? "-   " : position.Value.Icon + paddingRight)}");
                 Console.ForegroundColor = ConsoleColor.DarkRed; // Reset color, so other elements don't get highlighted
                 Console.Write("|");
 

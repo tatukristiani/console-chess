@@ -86,6 +86,18 @@ namespace console_chess.Game
                 // Add move to history
                 base.AddMoveToHistory(pieceToMove, base.currentTurnPlayer, originalPosition, newPosition);
 
+                // TODO: Check for check
+                if(IsCheck(base.currentTurnPlayer, base.chessBoard))
+                {
+                    // TODO: Check for checkmate
+                    if(IsCheckMate(base.currentTurnPlayer, base.chessBoard))
+                    {
+                        // TODO: END GAME
+                    }
+
+                    // TODO: Add movement disable to chess pieces if their move won't remove the check
+                }
+
                 // Change players turn
                 base.ChangeTurn();
             }
@@ -138,6 +150,18 @@ namespace console_chess.Game
         {
             // Check first if the move is valid for the chess piece
             return base.chessBoard.GetChessPiece(currentPosition).IsValidMove(currentPosition, positionToMove, base.chessBoard.ChessPiecePositions);
+        }
+
+        // Checks for check
+        public override bool IsCheck(APlayer playerWhoMadeTheMove, ChessBoard chessBoard)
+        {
+            return false;
+        }
+
+        // Checks for checkmate
+        public override bool IsCheckMate(APlayer playerWhoMadeTheMove, ChessBoard chessBoard)
+        {
+            return false;
         }
     }
 }

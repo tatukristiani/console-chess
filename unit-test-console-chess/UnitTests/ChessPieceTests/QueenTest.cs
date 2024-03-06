@@ -9,13 +9,13 @@ using unit_test_console_chess.TestDataGenerators;
 
 namespace unit_test_console_chess.UnitTests.ChessPieceTests
 {
-    public class BishopTest
+    public class QueenTest
     {
         [Theory]
-        [ClassData(typeof(BishopDataGenerator))]
-        public void IsValidMoveTest(Bishop bishop, Position currentPosition, Position newPosition, Dictionary<Position, AChessPiece?> chessBoard, bool expectedResult)
+        [ClassData(typeof(QueenDataGenerator))]
+        public void IsValidMoveQueen(Queen queen, Position currentPosition, Position newPosition, Dictionary<Position, AChessPiece?> chessBoard, bool expectedResult)
         {
-            bool result = bishop.IsValidMove(currentPosition, newPosition, chessBoard);
+            bool result = queen.IsValidMove(currentPosition, newPosition, chessBoard);
             Assert.True(result == expectedResult);
         }
     }

@@ -9,9 +9,16 @@ namespace console_chess.ChessPieces
 {
     public class Pawn : AChessPiece
     {
-        //TODO: Refactor
         public Pawn(int code) : base(code)
         {
+        }
+
+        public Pawn(Color color) : base(color)
+        {
+            int code = this.Color == Color.White ? 1 : -1;
+            this.Code = code;
+            this.Name = base.ChessPieceInformation[code].Item1;
+            this.Icon = base.ChessPieceInformation[code].Item2;
         }
 
         /// <summary>
@@ -27,9 +34,6 @@ namespace console_chess.ChessPieces
         /// <returns>bool true when move is valid, false otherwise</returns>
         public override bool IsValidMove(Position currentPosition, Position newPosition, Dictionary<Position, AChessPiece?> chessPieceBoard)
         {
-            int positionDifference = newPosition - currentPosition;
-            AChessPiece? chessPieceOnNewPosition = chessPieceBoard[newPosition];
-
             // White pawn check section
             if (base.Color == Color.White)
             {
@@ -161,16 +165,6 @@ namespace console_chess.ChessPieces
                     ||
                     (chessBoard[newPosition] != null && positionDifference == sideWayEatDifferenceTwo && chessBoard[newPosition].Color != base.Color);
 
-        }
-
-        public override void Move()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Print()
-        {
-            throw new NotImplementedException();
         }
     }
 }

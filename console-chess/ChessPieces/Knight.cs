@@ -27,6 +27,14 @@ namespace console_chess.ChessPieces
         {
         }
 
+        public Knight(Color color) : base(color)
+        {
+            int code = this.Color == Color.White ? 2 : -2;
+            this.Code = code;
+            this.Name = base.ChessPieceInformation[code].Item1;
+            this.Icon = base.ChessPieceInformation[code].Item2;
+        }
+
         /// <summary>
         /// Validates the move for knight.
         /// Position differences and directions:
@@ -50,16 +58,6 @@ namespace console_chess.ChessPieces
             bool pieceOnPosIsNotOwn = pieceOnNewPos == null || (pieceOnNewPos != null && pieceOnNewPos.Color != base.Color);
 
             return possibleDifferences.Contains(positionDifference) && pieceOnPosIsNotOwn && Math.Abs(AlphabetIndex.GetIndex(newPosition) - AlphabetIndex.GetIndex(currentPosition)) <= 2;
-        }
-
-        public override void Move()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Print()
-        {
-            throw new NotImplementedException();
         }
     }
 }

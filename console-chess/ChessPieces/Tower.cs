@@ -12,6 +12,14 @@ namespace console_chess.ChessPieces
         {
         }
 
+        public Tower(Color color) : base(color)
+        {
+            int code = this.Color == Color.White ? 4 : -4;
+            this.Code = code;
+            this.Name = base.ChessPieceInformation[code].Item1;
+            this.Icon = base.ChessPieceInformation[code].Item2;
+        }
+
         /// <summary>
         /// Check if the move for Tower is a valid one.
         /// </summary>
@@ -102,16 +110,6 @@ namespace console_chess.ChessPieces
             }
 
             return true;
-        }
-
-        public override void Move()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Print()
-        {
-            throw new NotImplementedException();
         }
     }
 }

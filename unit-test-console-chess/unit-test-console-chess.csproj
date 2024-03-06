@@ -27,4 +27,8 @@
     <ProjectReference Include="..\console-chess\console-chess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UnitTests\GameTests\" />
+  </ItemGroup>
+
 </Project>
