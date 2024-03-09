@@ -28,9 +28,9 @@ namespace console_chess.ChessPieces
         /// <param name="chessPieceOnNewPosition">Nullable chess piece residing on the new position</param>
         /// <returns>bool true when move is valid, false otherwise</returns>
         public override bool IsValidMove(Position currentPosition, Position newPosition, Dictionary<Position, AChessPiece?> chessPieceBoard)
-        {
-            
+        {   
             int positionDifference = newPosition - currentPosition;
+            bool isValidMove = false;
             
             // Max 7 moves horizontally, Max 7 vertically, cant move if there is own piece in front
 
@@ -40,31 +40,31 @@ namespace console_chess.ChessPieces
                 // Move to right sections
                 if(positionDifference > 0 && AlphabetIndex.GetIndex(currentPosition) < AlphabetIndex.GetIndex(newPosition))
                 {
-                    return ValidateMove(currentPosition, newPosition, 1, chessPieceBoard);
+                    isValidMove = ValidateMove(currentPosition, newPosition, 1, chessPieceBoard);
                 }
                 // Move to left section
                 else if(positionDifference < 0 && AlphabetIndex.GetIndex(currentPosition) > AlphabetIndex.GetIndex(newPosition))
                 {
-                    return ValidateMove(currentPosition, newPosition, -1, chessPieceBoard);
+                    isValidMove = ValidateMove(currentPosition, newPosition, -1, chessPieceBoard);
                 }
 
                 return false;
             }
-
             // Check vertical
-            if (positionDifference % 8 == 0)
+            else if(positionDifference % 8 == 0)
             {
                 // Check if difference is positive or negative
                 if (positionDifference > 0)
                 {
-                    return ValidateMove(currentPosition, newPosition, 8, chessPieceBoard);
+                    isValidMove = ValidateMove(currentPosition, newPosition, 8, chessPieceBoard);
                 }
                 else
                 {
-                    return ValidateMove(currentPosition, newPosition, -8, chessPieceBoard);
+                    isValidMove = ValidateMove(currentPosition, newPosition, -8, chessPieceBoard);
                 }
             }
-            return false;
+
+            return isValidMove && !MoveExposesKing(currentPosition, newPosition, chessPieceBoard);
         }
 
         /// <summary>

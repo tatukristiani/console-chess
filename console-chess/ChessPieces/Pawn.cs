@@ -34,6 +34,8 @@ namespace console_chess.ChessPieces
         /// <returns>bool true when move is valid, false otherwise</returns>
         public override bool IsValidMove(Position currentPosition, Position newPosition, Dictionary<Position, AChessPiece?> chessPieceBoard)
         {
+            bool isValidMove = false;
+
             // White pawn check section
             if (base.Color == Color.White)
             {
@@ -41,57 +43,56 @@ namespace console_chess.ChessPieces
                 if (currentPosition.ToString().Contains("2"))
                 {
                     // Pawn is on the left most position
-                    if (currentPosition.ToString().Contains("A2")) return ValidateSidePawnMove(chessPieceBoard, currentPosition, newPosition, -7, true);
+                    if (currentPosition.ToString().Contains("A2")) isValidMove = ValidateSidePawnMove(chessPieceBoard, currentPosition, newPosition, -7, true);
 
                     // Pawn is on the right most position
-                    else if (currentPosition.ToString().Contains("H2")) return ValidateSidePawnMove(chessPieceBoard, currentPosition, newPosition, -9, true);
+                    else if (currentPosition.ToString().Contains("H2")) isValidMove = ValidateSidePawnMove(chessPieceBoard, currentPosition, newPosition, -9, true);
                     
                     // Pawn is not on the right/left most position
-                    return ValidateNormalMove(chessPieceBoard, newPosition, currentPosition, true);
+                    else isValidMove = ValidateNormalMove(chessPieceBoard, newPosition, currentPosition, true);
                 }
                 // Pawn has moved at least once
                 else
                 {
                     // Pawn is on the left most position
-                    if (currentPosition.ToString().Contains("A")) return ValidateSidePawnMove(chessPieceBoard, currentPosition, newPosition, - 7, false);
-                    
+                    if (currentPosition.ToString().Contains("A")) isValidMove = ValidateSidePawnMove(chessPieceBoard, currentPosition, newPosition, -7, false);
+                        
                     // Pawn is on the right most position
-                    else if (currentPosition.ToString().Contains("H")) return ValidateSidePawnMove(chessPieceBoard, currentPosition, newPosition, -9, false);
+                    else if (currentPosition.ToString().Contains("H")) isValidMove = ValidateSidePawnMove(chessPieceBoard, currentPosition, newPosition, -9, false);
                     
                     // Pawn is not on the right/left most position
-                    return ValidateNormalMove(chessPieceBoard, newPosition, currentPosition, false);
+                    else isValidMove = ValidateNormalMove(chessPieceBoard, newPosition, currentPosition, false);
                 }
-
-
             }
             // Black pawn check section
             else
             {
-
                 // Pawn has not moved yet
                 if (currentPosition.ToString().Contains("7"))
                 {
                     // Pawn is on the left most position
-                    if (currentPosition.ToString().Contains("A7")) return ValidateSidePawnMove(chessPieceBoard, currentPosition, newPosition, 9, true);
+                    if (currentPosition.ToString().Contains("A7")) isValidMove = ValidateSidePawnMove(chessPieceBoard, currentPosition, newPosition, 9, true);
                     
                     // Pawn is on the right most position
-                    else if (currentPosition.ToString().Contains("H7")) return ValidateSidePawnMove(chessPieceBoard, currentPosition, newPosition, 7, true);
+                    else if (currentPosition.ToString().Contains("H7")) isValidMove = ValidateSidePawnMove(chessPieceBoard, currentPosition, newPosition, 7, true);
 
                     // Pawn is not on the right/left most position
-                    return ValidateNormalMove(chessPieceBoard, newPosition, currentPosition, true);
+                    else isValidMove = ValidateNormalMove(chessPieceBoard, newPosition, currentPosition, true);
                 }
                 else
                 {
                     // Pawn is on the left most position
-                    if (currentPosition.ToString().Contains("A")) return ValidateSidePawnMove(chessPieceBoard, currentPosition, newPosition, 9, false);
+                    if (currentPosition.ToString().Contains("A")) isValidMove = ValidateSidePawnMove(chessPieceBoard, currentPosition, newPosition, 9, false);
                     
                     // Pawn is on the right most position
-                    else if (currentPosition.ToString().Contains("H")) return ValidateSidePawnMove(chessPieceBoard,currentPosition, newPosition, 7, false);
+                    else if (currentPosition.ToString().Contains("H")) isValidMove = ValidateSidePawnMove(chessPieceBoard,currentPosition, newPosition, 7, false);
 
                     // Pawn is not on the right/left most position
-                    return ValidateNormalMove(chessPieceBoard, newPosition, currentPosition, false);
+                    else isValidMove = ValidateNormalMove(chessPieceBoard, newPosition, currentPosition, false);
                 }
             }
+
+            return isValidMove && !MoveExposesKing(currentPosition, newPosition, chessPieceBoard);
                
         }
 

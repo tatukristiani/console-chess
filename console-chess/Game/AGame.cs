@@ -14,12 +14,13 @@ namespace console_chess.Game
         protected APlayer? playerOne;
         protected APlayer? playerTwo;
         protected ChessBoard chessBoard;
-        protected APlayer currentTurnPlayer;
+        protected APlayer? currentTurnPlayer;
         protected List<string> moveHistory = new List<string>();
 
         public AGame(bool useIcons)
         {
             this.chessBoard = new ChessBoard(useIcons);
+            currentTurnPlayer = playerOne;
         }
 
         public abstract void StartGame();
@@ -54,8 +55,14 @@ namespace console_chess.Game
             moveHistory.Add($"{player.Name} Moved {piece.Name} From {originalPosition} to {newPosition}.");
         }
 
-        public abstract bool IsCheck(APlayer playerWhoMadeTheMove, ChessBoard chessBoard);
+        public bool IsCheck()
+        {
+            return chessBoard.IsCheck(currentTurnPlayer.Color);
+        }
 
-        public abstract bool IsCheckMate(APlayer playerWhoMadeTheMove, ChessBoard chessBoard);
+        public bool IsCheckMate()
+        {
+            return chessBoard.IsCheckMate(currentTurnPlayer.Color);
+        }
     }
 }

@@ -45,7 +45,7 @@ namespace console_chess.Game
                     if(Enum.TryParse(Console.ReadLine(), out originalPosition) 
                         && !originalPosition.Equals(Position.Default) 
                         && base.currentTurnPlayer.Color == base.chessBoard.GetChessPiece(originalPosition)?.Color
-                        && ChessPieceCanBeMovedFrom(originalPosition)  
+                        && base.chessBoard.ChessPieceCanMove(originalPosition)  
                         )
                     {
                         moveFromIsValid = true;
@@ -72,7 +72,7 @@ namespace console_chess.Game
                     // Position is valid, Position is not Default, selected chess piece can move to the position
                     if(Enum.TryParse(Console.ReadLine(), out newPosition) 
                         && newPosition != Position.Default
-                        && ChessPieceCanBeMovedTo(originalPosition, newPosition)
+                        && base.chessBoard.ChessPieceCanBeMovedTo(originalPosition, newPosition)
                         )
                     {
                         moveToIsValid = true;
@@ -83,19 +83,30 @@ namespace console_chess.Game
                 AChessPiece pieceToMove = base.chessBoard.GetChessPiece(originalPosition);
                 base.currentTurnPlayer.Move(pieceToMove, originalPosition, newPosition);
 
+                base.chessBoard.UpdateChessBoard(null);
+
                 // Add move to history
                 base.AddMoveToHistory(pieceToMove, base.currentTurnPlayer, originalPosition, newPosition);
 
-                // TODO: Check for check
-                if(IsCheck(base.currentTurnPlayer, base.chessBoard))
+                // Check for check
+                if(IsCheck())
                 {
-                    // TODO: Check for checkmate
-                    if(IsCheckMate(base.currentTurnPlayer, base.chessBoard))
-                    {
-                        // TODO: END GAME
-                    }
+                    Console.WriteLine($"{base.currentTurnPlayer.Name} checked {(base.currentTurnPlayer.Color == base.playerOne.Color ? base.playerTwo.Name : base.playerOne.Name)}");
 
-                    // TODO: Add movement disable to chess pieces if their move won't remove the check
+                    if(IsCheckMate())
+                    {
+                        Console.WriteLine($"Checkmate, {base.currentTurnPlayer.Name} WINS!");
+                        while(true)
+                        {
+                            Console.WriteLine("Press anything to leave the game...");
+                            var endgame = Console.ReadLine();
+                            Console.WriteLine("Ending game...");
+                            Thread.Sleep(5000);
+                            break;
+                        }
+                        break;
+                    }
+                    Thread.Sleep(5000);            
                 }
 
                 // Change players turn
@@ -127,41 +138,6 @@ namespace console_chess.Game
 
             }
         }
-
-        // Check if the chess piece can be moved anywhere (used when selecting a chess piece to move)
-        private bool ChessPieceCanBeMovedFrom(Position currentPosition)
-        {
-            // Gather all possible position where the chess piece can move
-            List<Position> possiblePositionToMove = new List<Position>();
-            foreach(var position in base.chessBoard.ChessPiecePositions)
-            {
-                // Check if the move for the chess piece is valid from current position to the position in question
-                if (base.chessBoard.GetChessPiece(currentPosition).IsValidMove(currentPosition, position.Key, base.chessBoard.ChessPiecePositions))
-                {
-                    possiblePositionToMove.Add(position.Key); 
-                }
-            }
-
-            return possiblePositionToMove.Any();
-        }
-
-        // Check if the chess piece can be moved to the new position from its current position (used when moving chess piece to a new position)
-        private bool ChessPieceCanBeMovedTo(Position currentPosition, Position positionToMove)
-        {
-            // Check first if the move is valid for the chess piece
-            return base.chessBoard.GetChessPiece(currentPosition).IsValidMove(currentPosition, positionToMove, base.chessBoard.ChessPiecePositions);
-        }
-
-        // Checks for check
-        public override bool IsCheck(APlayer playerWhoMadeTheMove, ChessBoard chessBoard)
-        {
-            return false;
-        }
-
-        // Checks for checkmate
-        public override bool IsCheckMate(APlayer playerWhoMadeTheMove, ChessBoard chessBoard)
-        {
-            return false;
-        }
+      
     }
 }

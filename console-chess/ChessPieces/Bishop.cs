@@ -52,7 +52,7 @@ namespace console_chess.ChessPieces
             if(!PositionDiffMatchesIndexDiff(currentPosition, newPosition)) return false;
 
 
-            return ValidateDiagonalMovement(currentPosition, newPosition, chessPieceBoard);
+            return ValidateDiagonalMovement(currentPosition, newPosition, chessPieceBoard) && !MoveExposesKing(currentPosition, newPosition, chessPieceBoard);
             
            
         }

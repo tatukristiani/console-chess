@@ -57,7 +57,7 @@ namespace console_chess.ChessPieces
             AChessPiece? pieceOnNewPos = chessPieceBoard[newPosition];
             bool pieceOnPosIsNotOwn = pieceOnNewPos == null || (pieceOnNewPos != null && pieceOnNewPos.Color != base.Color);
 
-            return possibleDifferences.Contains(positionDifference) && pieceOnPosIsNotOwn && Math.Abs(AlphabetIndex.GetIndex(newPosition) - AlphabetIndex.GetIndex(currentPosition)) <= 2;
+            return (possibleDifferences.Contains(positionDifference) && pieceOnPosIsNotOwn && Math.Abs(AlphabetIndex.GetIndex(newPosition) - AlphabetIndex.GetIndex(currentPosition)) <= 2) && !MoveExposesKing(currentPosition, newPosition, chessPieceBoard);
         }
     }
 }

@@ -32,33 +32,35 @@ namespace console_chess.ChessPieces
         /// <returns>true when valid, false otherwise</returns>
         public override bool IsValidMove(Position currentPosition, Position newPosition, Dictionary<Position, AChessPiece?> chessPieceBoard)
         {
+            bool moveIsValid;
+
             // Check if positions are on the same column
             if (AlphabetIndex.GetIndex(newPosition) == AlphabetIndex.GetIndex(currentPosition))
             {
                 // Check is there a chess piece blocking the path
-                return NoChessPieceOnSameColumnPath(currentPosition, newPosition, chessPieceBoard);
+                moveIsValid = NoChessPieceOnSameColumnPath(currentPosition, newPosition, chessPieceBoard);
             }
-
             // Check if positions are on the same row
-            if (newPosition.ToString().ToCharArray()[1].Equals(currentPosition.ToString().ToCharArray()[1]))
+            else if (newPosition.ToString().ToCharArray()[1].Equals(currentPosition.ToString().ToCharArray()[1]))
             {
                 // Check is there a chess piece blocking the path
-                return NoChessPieceOnSameRowPath(currentPosition, newPosition, chessPieceBoard);
+                moveIsValid = NoChessPieceOnSameRowPath(currentPosition, newPosition, chessPieceBoard);
+            }
+            // New position is not on the same row or column = New position is diagonal
+            else
+            {
+                // Create tmp bishop, for validating diagonal movement
+                Bishop tmpBishop = new Bishop(base.Color.Equals(Color.White) ? 3 : -3);
+                tmpBishop.SetChessBoard(base.ChessBoard);
+
+                // Check that the index difference of the current position and new position matches the position difference
+                if (!tmpBishop.PositionDiffMatchesIndexDiff(currentPosition, newPosition)) return false;
+
+                moveIsValid = tmpBishop.ValidateDiagonalMovement(currentPosition, newPosition, chessPieceBoard);
             }
 
-            // New position is not on the same row or column = New position is diagonal
-
-
-            // Create tmp bishop, for validating diagonal movement
-            Bishop tmpBishop = new Bishop(base.Color.Equals(Color.White) ? 3 : -3);
-
-            // Check that the index difference of the current position and new position matches the position difference
-            if (!tmpBishop.PositionDiffMatchesIndexDiff(currentPosition, newPosition)) return false;
-
-
-            return tmpBishop.ValidateDiagonalMovement(currentPosition, newPosition, chessPieceBoard);
+            return moveIsValid && !base.MoveExposesKing(currentPosition, newPosition, chessPieceBoard);
         }
-
 
         // Checks if there are chess pieces on the same column as the queen
         private bool NoChessPieceOnSameColumnPath(Position currentPosition, Position newPosition, Dictionary<Position, AChessPiece?> chessPieceBoard)

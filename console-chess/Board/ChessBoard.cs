@@ -1,4 +1,5 @@
 ﻿using console_chess.ChessPieces;
+using console_chess.Players;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,9 +78,9 @@ namespace console_chess.Board
         /// Populates the chess board positions with Chess Pieces
         /// </summary>
         /// <returns>Dictionary<Position, AChessPiece?></returns>
-        private static Dictionary<Position, AChessPiece?> Populate()
+        private Dictionary<Position, AChessPiece?> Populate()
         {
-            return new Dictionary<Position, AChessPiece?>()
+            var chessPiecePosition = new Dictionary<Position, AChessPiece?>()
             {
                 {Position.A8, new Tower(-4) },  {Position.B8, new Knight(-2)},  {Position.C8, new Bishop(-3)},  {Position.D8, new Queen(-5)},   {Position.E8, new King(-6)},    {Position.F8, new Bishop(-3)},  {Position.G8, new Knight(-2)},  {Position.H8, new Tower(-4)},
                 {Position.A7, new Pawn(-1) },   {Position.B7, new Pawn(-1)},    {Position.C7, new Pawn(-1)},    {Position.D7, new Pawn(-1)},    {Position.E7, new Pawn(-1)},    {Position.F7, new Pawn(-1)},    {Position.G7, new Pawn(-1)},    {Position.H7, new Pawn(-1)},
@@ -90,6 +91,12 @@ namespace console_chess.Board
                 {Position.A2, new Pawn(1) },    {Position.B2, new Pawn(1)},     {Position.C2, new Pawn(1)},     {Position.D2, new Pawn(1)},     {Position.E2, new Pawn(1)},     {Position.F2, new Pawn(1)},     {Position.G2, new Pawn(1)},     {Position.H2, new Pawn(1)},
                 {Position.A1, new Tower(4) },   {Position.B1, new Knight(2)},   {Position.C1, new Bishop(3)},   {Position.D1, new Queen(5)},    {Position.E1, new King(6)},     {Position.F1, new Bishop(3)},   {Position.G1, new Knight(2)},   {Position.H1, new Tower(4)}
             };
+
+            foreach(var pos in chessPiecePosition)
+            {
+                pos.Value?.SetChessBoard(this);
+            }
+            return chessPiecePosition;
         }
 
         /// <summary>
@@ -250,6 +257,83 @@ namespace console_chess.Board
         private bool PositionIsInsideOfChessPiecePattern(AChessPiece piece, Position currentChessPiecePosition, Position possibleNewChessPiecePosition)
         {
             return piece.IsValidMove(currentChessPiecePosition, possibleNewChessPiecePosition,ChessPiecePositions);
+        }
+
+        /// <summary>
+        /// Returns the current position of the King
+        /// </summary>
+        /// <param name="color">Color of the King which position to return</param>
+        /// <returns>Position of the King</returns>
+        public Position GetKingPosition(Color color)
+        {
+            return ChessPiecePositions.First(piece => piece.Value != null && piece.Value.Color == color && piece.Value.GetType() == typeof(King)).Key;
+        }
+
+        /// <summary>
+        /// Checks if the player checked the other player
+        /// </summary>
+        /// <param name="color">Color of the current player</param>
+        /// <returns>true when when color checked the other color player</returns>
+        public bool IsCheck(Color color)
+        {
+            // Check if the enemys King is threathened by any of the other players pieces
+            foreach (var pos in this.ChessPiecePositions)
+            {
+                AChessPiece? piece = pos.Value;
+
+                // Only check if the other players chess pieces threaten the king
+                if (piece != null && piece.Color == color)
+                {
+                    // Check if the chess piece could move to position of King
+                    if (piece.IsValidMove(pos.Key, GetKingPosition(color == Color.White ? Color.Black : Color.White), this.ChessPiecePositions))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public bool IsCheckMate(Color currentTurnPlayerColor)
+        {
+            // Check if the other player could move any pieces
+            foreach (var pos in ChessPiecePositions)
+            {
+                AChessPiece? piece = pos.Value;
+
+                if (piece != null && piece.Color != currentTurnPlayerColor)
+                {
+                    if (ChessPieceCanMove(pos.Key))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        // Check if the chess piece can be moved anywhere
+        public bool ChessPieceCanMove(Position currentPosition)
+        {
+            // Gather all possible positions where the chess piece can move
+            List<Position> possiblePositionToMove = new List<Position>();
+            foreach (var position in ChessPiecePositions)
+            {
+                // Check if the move for the chess piece is valid from current position to the position in question
+                if (ChessPiecePositions[currentPosition].IsValidMove(currentPosition, position.Key, ChessPiecePositions))
+                {
+                    possiblePositionToMove.Add(position.Key);
+                }
+            }
+
+            return possiblePositionToMove.Any();
+        }
+
+        // Check if the chess piece can be moved to the new position from its current position (used when moving chess piece to a new position)
+        public bool ChessPieceCanBeMovedTo(Position currentPosition, Position positionToMove)
+        {
+            // Check first if the move is valid for the chess piece
+            return ChessPiecePositions[currentPosition].IsValidMove(currentPosition, positionToMove, ChessPiecePositions);
         }
     }
 }

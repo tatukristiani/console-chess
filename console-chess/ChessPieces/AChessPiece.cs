@@ -51,6 +51,8 @@ namespace console_chess.ChessPieces
 
         public string? Icon { get; set; }
 
+        public ChessBoard? ChessBoard { get; set; }
+
 
         /// <summary>
         /// Constructor. Populate Name and Color with code
@@ -68,13 +70,52 @@ namespace console_chess.ChessPieces
         /// Alternative constructor. Populates Name and code according to color and type of object.
         /// </summary>
         /// <param name="color"></param>
-       public AChessPiece(Color color)
+        public AChessPiece(Color color)
         {
             Color = color;
         }
 
+        /// <summary>
+        /// Sets the chess board
+        /// </summary>
+        /// <param name="chessBoard">ChessBoard where to add the chess piece</param>
+        public void SetChessBoard(ChessBoard? chessBoard)
+        {
+            this.ChessBoard = chessBoard;
+        }
 
+        /// <summary>
+        /// Abstract method to validate a move.
+        /// </summary>
+        /// <param name="currentPosition">Current position of the chess piece</param>
+        /// <param name="newPosition">New position to validate</param>
+        /// <param name="chessPieceBoard">Current status of the chess board</param>
+        /// <returns>true when valid move, false otherwise</returns>
         public abstract bool IsValidMove(Position currentPosition, Position newPosition, Dictionary<Position, AChessPiece?> chessPieceBoard);
+
+        /// <summary>
+        /// Checks if the move exposes own King
+        /// </summary>
+        /// <param name="originalPosition">Original position of the chess piece to move</param>
+        /// <param name="newPosition">New position to be validated</param>
+        /// <param name="chessPieceBoard">Current status of the chess board</param>
+        /// <returns>true when move exposes the king, false otherwise</returns>
+        public bool MoveExposesKing(Position originalPosition, Position newPosition, Dictionary<Position, AChessPiece?> chessPieceBoard)
+        {
+            // Move the chess piece to the new position
+            AChessPiece? pieceOnNewPos = chessPieceBoard[newPosition];
+            chessPieceBoard[newPosition] = chessPieceBoard[originalPosition];
+            chessPieceBoard[originalPosition] = null;
+
+            // Check if the move would leave own king exposed
+            bool isCheck = ChessBoard.IsCheck(Color == Color.White ? Color.Black : Color.White);
+
+            // Move chess pieces back to their original positions
+            chessPieceBoard[originalPosition] = chessPieceBoard[newPosition];
+            chessPieceBoard[newPosition] = pieceOnNewPos;
+
+            return isCheck;
+        }
 
     }
 }
