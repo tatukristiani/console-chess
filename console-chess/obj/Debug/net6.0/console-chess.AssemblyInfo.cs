@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("console-chess")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bcdb4060d741c083b53a37a8163d569999d8bef7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+30a40da9b9f0cc981e0fab652a1a375abf06aaeb")]
 [assembly: System.Reflection.AssemblyProductAttribute("console-chess")]
 [assembly: System.Reflection.AssemblyTitleAttribute("console-chess")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

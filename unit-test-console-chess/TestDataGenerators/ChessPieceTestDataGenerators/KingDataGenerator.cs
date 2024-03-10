@@ -11,6 +11,7 @@ namespace unit_test_console_chess.TestDataGenerators
 {
     public class KingDataGenerator : IEnumerable<object[]>
     {
+
         private readonly List<object[]> _data =
         [
               new object[] {new King(6), Position.E1, Position.E2, new Dictionary<Position, AChessPiece?>()
@@ -155,7 +156,7 @@ namespace unit_test_console_chess.TestDataGenerators
                         {Position.A2, new Pawn(1) },    {Position.B2, new Pawn(1)},     {Position.C2, new Pawn(1)},     {Position.D2, new Pawn(1)},     {Position.E2, new Pawn(1)},     {Position.F2, new Pawn(1)},     {Position.G2, new Pawn(1)},     {Position.H2, new Pawn(1)},
                         {Position.A1, new Tower(4) },   {Position.B1, new Knight(2)},   {Position.C1, new Bishop(3)},   {Position.D1, new Queen(5)},    {Position.E1, null},     {Position.F1, new Bishop(3)},   {Position.G1, new Knight(2)},   {Position.H1, new Tower(4)}
                     },
-                    true
+                    false
                 },
             new object[] {new King(6), Position.D5, Position.C6, new Dictionary<Position, AChessPiece?>()
                     {
@@ -168,7 +169,7 @@ namespace unit_test_console_chess.TestDataGenerators
                         {Position.A2, new Pawn(1) },    {Position.B2, new Pawn(1)},     {Position.C2, new Pawn(1)},     {Position.D2, new Pawn(1)},     {Position.E2, new Pawn(1)},     {Position.F2, new Pawn(1)},     {Position.G2, new Pawn(1)},     {Position.H2, new Pawn(1)},
                         {Position.A1, new Tower(4) },   {Position.B1, new Knight(2)},   {Position.C1, new Bishop(3)},   {Position.D1, new Queen(5)},    {Position.E1, null},     {Position.F1, new Bishop(3)},   {Position.G1, new Knight(2)},   {Position.H1, new Tower(4)}
                     },
-                    true
+                    false
                 },
             new object[] {new King(6), Position.D5, Position.C5, new Dictionary<Position, AChessPiece?>()
                     {
@@ -246,7 +247,7 @@ namespace unit_test_console_chess.TestDataGenerators
                         {Position.A2, new Pawn(1) },    {Position.B2, new Pawn(1)},     {Position.C2, new Pawn(1)},     {Position.D2, new Pawn(1)},     {Position.E2, new Pawn(1)},     {Position.F2, new Pawn(1)},     {Position.G2, new Pawn(1)},     {Position.H2, new Pawn(1)},
                         {Position.A1, new Tower(4) },   {Position.B1, new Knight(2)},   {Position.C1, new Bishop(3)},   {Position.D1, new Queen(5)},    {Position.E1, null},     {Position.F1, new Bishop(3)},   {Position.G1, new Knight(2)},   {Position.H1, new Tower(4)}
                     },
-                    true
+                    false
                 },
 
             new object[] {new King(-6), Position.D5, Position.D6, new Dictionary<Position, AChessPiece?>()

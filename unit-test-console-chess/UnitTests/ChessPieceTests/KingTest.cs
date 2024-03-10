@@ -13,9 +13,13 @@ namespace unit_test_console_chess.UnitTests.ChessPieceTests
     {
         [Theory]
         [ClassData(typeof(KingDataGenerator))]
-        public void IsValidMoveKnight(King king, Position originalPosition, Position newPosition, Dictionary<Position, AChessPiece?> chessBoard, bool expectedResult)
+        public void IsValidMoveKing(King king, Position originalPosition, Position newPosition, Dictionary<Position, AChessPiece?> chessBoard, bool expectedResult)
         {
-            bool result = king.IsValidMove(originalPosition, newPosition, chessBoard);
+            ChessBoard board = new ChessBoard(false);
+            board.ChessPiecePositions = chessBoard;
+            board.SetChessBoardToAllPieces();
+
+            bool result = chessBoard[originalPosition].IsValidMove(originalPosition, newPosition, chessBoard);
             Assert.True(result == expectedResult);
         }
     }

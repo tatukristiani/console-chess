@@ -15,7 +15,11 @@ namespace unit_test_console_chess.UnitTests.ChessPieceTests
         [ClassData(typeof(TowerHorizontalDataGenerator))]
         public void MoveHorizontalTest(Tower tower, Position currentPosition, Position newPosition, Dictionary<Position, AChessPiece?> chessBoard, bool expectedResult)
         {
-            bool result = tower.IsValidMove(currentPosition, newPosition, chessBoard);
+            ChessBoard board = new ChessBoard(false);
+            board.ChessPiecePositions = chessBoard;
+            board.SetChessBoardToAllPieces();
+
+            bool result = chessBoard[currentPosition].IsValidMove(currentPosition, newPosition, chessBoard);
             Assert.True(result == expectedResult);
         }
 
@@ -23,7 +27,11 @@ namespace unit_test_console_chess.UnitTests.ChessPieceTests
         [ClassData(typeof(TowerVerticalDataGenerator))]
         public void MoveVerticallyTest(Tower tower, Position currentPosition, Position newPosition, Dictionary<Position, AChessPiece?> chessBoard, bool expectedResult)
         {
-            bool result = tower.IsValidMove(currentPosition, newPosition, chessBoard);
+            ChessBoard board = new ChessBoard(false);
+            board.ChessPiecePositions = chessBoard;
+            board.SetChessBoardToAllPieces();
+
+            bool result = chessBoard[currentPosition].IsValidMove(currentPosition, newPosition, chessBoard);
             Assert.True(result == expectedResult);
         }
 

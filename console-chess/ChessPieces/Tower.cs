@@ -31,82 +31,78 @@ namespace console_chess.ChessPieces
         {   
             int positionDifference = newPosition - currentPosition;
             bool isValidMove = false;
-            
-            // Max 7 moves horizontally, Max 7 vertically, cant move if there is own piece in front
 
-            // Check horizontal
-            if(positionDifference <= 7 && positionDifference >= -7)
+            // Check if positions are on the same column
+            if (AlphabetIndex.GetIndex(newPosition) == AlphabetIndex.GetIndex(currentPosition))
             {
-                // Move to right sections
-                if(positionDifference > 0 && AlphabetIndex.GetIndex(currentPosition) < AlphabetIndex.GetIndex(newPosition))
-                {
-                    isValidMove = ValidateMove(currentPosition, newPosition, 1, chessPieceBoard);
-                }
-                // Move to left section
-                else if(positionDifference < 0 && AlphabetIndex.GetIndex(currentPosition) > AlphabetIndex.GetIndex(newPosition))
-                {
-                    isValidMove = ValidateMove(currentPosition, newPosition, -1, chessPieceBoard);
-                }
-
-                return false;
+                // Check is there a chess piece blocking the path
+                isValidMove = NoChessPieceOnSameColumnPath(currentPosition, newPosition, chessPieceBoard);
             }
-            // Check vertical
-            else if(positionDifference % 8 == 0)
+            // Check if positions are on the same row
+            else if (newPosition.ToString().ToCharArray()[1].Equals(currentPosition.ToString().ToCharArray()[1]))
             {
-                // Check if difference is positive or negative
-                if (positionDifference > 0)
-                {
-                    isValidMove = ValidateMove(currentPosition, newPosition, 8, chessPieceBoard);
-                }
-                else
-                {
-                    isValidMove = ValidateMove(currentPosition, newPosition, -8, chessPieceBoard);
-                }
+                // Check is there a chess piece blocking the path
+                isValidMove = NoChessPieceOnSameRowPath(currentPosition, newPosition, chessPieceBoard);
             }
 
             return isValidMove && !MoveExposesKing(currentPosition, newPosition, chessPieceBoard);
         }
 
-        /// <summary>
-        /// Validates the rooks move.
-        /// Addend number is used to determine the direction where the chess piece is trying to go.
-        ///  8: Going down
-        /// -8: Going up
-        ///  1: Going right
-        /// -1: Going left
-        /// </summary>
-        /// <param name="startingPosition">Starting position of the rook</param>
-        /// <param name="newPosition">Position to check if it can be executed</param>
-        /// <param name="addend">int number that determine the direction where the rooks is going. 8: Down, -8: Up, 1: Right and -1: Left</param>
-        /// <param name="board">Current chess board status</param>
-        /// <returns>bool true when move is valid, false otherwise</returns>
-        private bool ValidateMove(Position startingPosition, Position newPosition, int addend, Dictionary<Position, AChessPiece?> board)
+       
+        // Checks if there are chess pieces on the same column as the queen
+        private bool NoChessPieceOnSameColumnPath(Position currentPosition, Position newPosition, Dictionary<Position, AChessPiece?> chessPieceBoard)
         {
-            int currentCheckPosition = (int)startingPosition + addend;
+            int positionDifference = newPosition - currentPosition;
 
-            // Move to right or up section when addend number is negative
-            if(addend < 0)
+            if (positionDifference == 0) return false;
+
+            // Negative difference -> Going up & Positive difference -> Going down
+            int diffPerMove = positionDifference < 0 ? -8 : 8;
+            int nextPosition = (int)currentPosition + diffPerMove;
+
+            if (positionDifference < 0)
             {
-                // Loop while all areas have been checked or enemy is blocking path
-                while (currentCheckPosition >= (int)newPosition)
+                // Check if there are any chess pieces on the way
+                while (nextPosition >= (int)newPosition)
                 {
-                    AChessPiece? pieceOnPosition = board[(Position)currentCheckPosition];
-                    if (pieceOnPosition != null && pieceOnPosition.Color == base.Color) return false;
-
-                    if (pieceOnPosition != null && pieceOnPosition.Color != base.Color && currentCheckPosition != (int)newPosition) return false;
-                    currentCheckPosition += addend;
+                    AChessPiece? piece = chessPieceBoard[(Position)nextPosition];
+                    if ((piece != null && nextPosition != (int)newPosition) || (piece != null && base.Color.Equals(piece.Color))) return false;
+                    nextPosition += diffPerMove;
                 }
-                return true;
+            }
+            else
+            {
+                // Check if there are any chess pieces on the way
+                while (nextPosition <= (int)newPosition)
+                {
+                    AChessPiece? piece = chessPieceBoard[(Position)nextPosition];
+                    if ((piece != null && nextPosition != (int)newPosition) || (piece != null && base.Color.Equals(piece.Color))) return false;
+                    nextPosition += diffPerMove;
+                }
             }
 
-            // Move to left or down when addend number is positive
-            while (currentCheckPosition <= (int)newPosition)
-            {
-                AChessPiece? pieceOnPosition = board[(Position)currentCheckPosition];
-                if (pieceOnPosition != null && pieceOnPosition.Color == base.Color) return false;
+            return true;
+        }
 
-                if (pieceOnPosition != null && pieceOnPosition.Color != base.Color && currentCheckPosition != (int)newPosition) return false;
-                currentCheckPosition += addend;
+
+        // Checks if there are chess pieces on the same row as the queen
+        private bool NoChessPieceOnSameRowPath(Position currentPosition, Position newPosition, Dictionary<Position, AChessPiece?> chessPieceBoard)
+        {
+            int positionDifference = newPosition - currentPosition;
+            if(positionDifference == 0) return false;
+
+            int countOfMovesToNewPosition = Math.Abs(positionDifference);
+
+            // Negative difference -> Going left & Positive difference -> Going right
+            int diffPerMove = positionDifference < 0 ? -1 : 1;
+            int nextPosition = (int)currentPosition + diffPerMove;
+
+            // Check if there are any chess pieces on the way
+            for (int i = 0; i < countOfMovesToNewPosition; i++)
+            {
+                AChessPiece? piece = chessPieceBoard[(Position)nextPosition];
+                if ((piece != null && nextPosition != (int)newPosition) || (piece != null && base.Color.Equals(piece.Color))) return false;
+                nextPosition += diffPerMove;
             }
 
             return true;

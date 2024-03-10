@@ -24,5 +24,8 @@ namespace console_chess.Players
         public abstract bool Move(AChessPiece piece, Position originalPosition, Position newPosition);
 
         public abstract void ChoosePieceToMove(AChessPiece piece, Position originalPosition);
+
+        public abstract Position GetChessPiecePositionToMove();
+        public abstract Position GetNewPositionToMoveChessPiece(Position originalPosition);
     }
 }

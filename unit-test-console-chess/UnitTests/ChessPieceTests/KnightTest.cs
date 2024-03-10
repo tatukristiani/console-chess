@@ -15,7 +15,11 @@ namespace unit_test_console_chess.UnitTests.ChessPieceTests
         [ClassData(typeof(KnightDataGenerator))]
         public void IsValidMoveKnight(Knight knight, Position originalPosition, Position newPosition, Dictionary<Position, AChessPiece?> chessBoard, bool expectedResult)
         {
-            bool result = knight.IsValidMove(originalPosition, newPosition, chessBoard);
+            ChessBoard board = new ChessBoard(false);
+            board.ChessPiecePositions = chessBoard;
+            board.SetChessBoardToAllPieces();
+
+            bool result = chessBoard[originalPosition].IsValidMove(originalPosition, newPosition, chessBoard);
             Assert.True(result == expectedResult);
         }
     }

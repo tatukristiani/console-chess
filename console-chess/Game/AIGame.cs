@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace console_chess.Game
 {
-    public class PlayerVsPlayerGame : AGame
+    public class AIGame : AGame
     {
-        public PlayerVsPlayerGame(bool useIcons) : base(useIcons)
+        public AIGame(bool useIcons) : base(useIcons)
         {
         }
 
@@ -74,20 +74,20 @@ namespace console_chess.Game
 
         private void CreatePlayers()
         {
-            base.playerOne = CreatePlayer(1);
-            base.playerTwo = CreatePlayer(2);
+            base.playerOne = CreateUserPlayer();
+            base.playerTwo = CreateAIPlayer();
             base.currentTurnPlayer = base.playerOne;
         }
-
-        private APlayer CreatePlayer(int playerNumber)
+        
+        private APlayer CreateUserPlayer()
         {
-            while(true)
+            while (true)
             {
-                Console.Write($"Player {playerNumber} Name: ");
+                Console.Write($"User Players Name: ");
                 string? playerName = Console.ReadLine();
-                if(!String.IsNullOrWhiteSpace(playerName))
+                if (!String.IsNullOrWhiteSpace(playerName))
                 {
-                    return new RealPlayer(playerName, base.chessBoard, playerNumber == 1 ? Color.White : Color.Black);
+                    return new RealPlayer(playerName, base.chessBoard, Color.White);
                 }
                 else
                 {
@@ -96,6 +96,10 @@ namespace console_chess.Game
 
             }
         }
-      
+
+        private APlayer CreateAIPlayer()
+        {
+            return new ArtificalPlayer("AI", base.chessBoard, Color.Black);
+        }
     }
 }

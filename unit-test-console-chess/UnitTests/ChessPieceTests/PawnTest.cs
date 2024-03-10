@@ -11,7 +11,11 @@ namespace unit_test_console_chess.UnitTests.ChessPieceTests
         [ClassData(typeof(PawnDataGenerator))]
         public void IsValidMovePawn(Pawn pawn, Position pawnPosition, Position newPosition, Dictionary<Position, AChessPiece?> chessBoard, bool expectedResult)
         {
-            bool result = pawn.IsValidMove(pawnPosition, newPosition, chessBoard);
+            ChessBoard board = new ChessBoard(false);
+            board.ChessPiecePositions = chessBoard;
+            board.SetChessBoardToAllPieces();
+
+            bool result = chessBoard[pawnPosition].IsValidMove(pawnPosition, newPosition, chessBoard);
             Assert.True(result == expectedResult);
         }
     }

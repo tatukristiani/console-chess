@@ -1,13 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "FRVLzZ5+r34NfYaSuN2MeAFayTB23uMDzL2shH2R2FOgF00cZ1tx4ogNzsVpXh9XyhqvrOlCIsCwgq7rAJ/+8A==",
+  "dgSpecHash": "zhbP77H3edig7Z8IH7LHQoQ5EMyZCvJn3JvuT/bQAQl9fqfmogZBg4LZc7S/hb++H7i+iLcrfnXyQ/MkQdS/KA==",
   "success": true,
-  "projectFilePath": "C:\\Projects\\console-chess\\console-chess\\console-chess.csproj",
-  "expectedPackageFiles": [
-    "C:\\Users\\Tatu\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.27\\microsoft.windowsdesktop.app.ref.6.0.27.nupkg.sha512",
-    "C:\\Users\\Tatu\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.27\\microsoft.netcore.app.ref.6.0.27.nupkg.sha512",
-    "C:\\Users\\Tatu\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.27\\microsoft.aspnetcore.app.ref.6.0.27.nupkg.sha512",
-    "C:\\Users\\Tatu\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\6.0.27\\microsoft.netcore.app.host.win-x64.6.0.27.nupkg.sha512"
-  ],
+  "projectFilePath": "C:\\Users\\tatuk\\source\\repos\\console-chess\\console-chess\\console-chess.csproj",
+  "expectedPackageFiles": [],
   "logs": []
 }

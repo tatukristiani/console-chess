@@ -15,7 +15,11 @@ namespace unit_test_console_chess.UnitTests.ChessPieceTests
         [ClassData(typeof(QueenDataGenerator))]
         public void IsValidMoveQueen(Queen queen, Position currentPosition, Position newPosition, Dictionary<Position, AChessPiece?> chessBoard, bool expectedResult)
         {
-            bool result = queen.IsValidMove(currentPosition, newPosition, chessBoard);
+            ChessBoard board = new ChessBoard(false);
+            board.ChessPiecePositions = chessBoard;
+            board.SetChessBoardToAllPieces();
+
+            bool result = chessBoard[currentPosition].IsValidMove(currentPosition, newPosition, chessBoard);
             Assert.True(result == expectedResult);
         }
     }

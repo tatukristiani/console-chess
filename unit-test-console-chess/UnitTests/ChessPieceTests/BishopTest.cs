@@ -13,9 +13,13 @@ namespace unit_test_console_chess.UnitTests.ChessPieceTests
     {
         [Theory]
         [ClassData(typeof(BishopDataGenerator))]
-        public void IsValidMoveTest(Bishop bishop, Position currentPosition, Position newPosition, Dictionary<Position, AChessPiece?> chessBoard, bool expectedResult)
+        public void IsValidMoveBishop(Bishop bishop, Position currentPosition, Position newPosition, Dictionary<Position, AChessPiece?> chessBoard, bool expectedResult)
         {
-            bool result = bishop.IsValidMove(currentPosition, newPosition, chessBoard);
+            ChessBoard board = new ChessBoard(false);
+            board.ChessPiecePositions = chessBoard;
+            board.SetChessBoardToAllPieces();
+
+            bool result = chessBoard[currentPosition].IsValidMove(currentPosition, newPosition, chessBoard);
             Assert.True(result == expectedResult);
         }
     }

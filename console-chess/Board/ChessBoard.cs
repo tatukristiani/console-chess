@@ -99,6 +99,14 @@ namespace console_chess.Board
             return chessPiecePosition;
         }
 
+        public void SetChessBoardToAllPieces()
+        {
+            foreach(var pos in ChessPiecePositions)
+            {
+                pos.Value?.SetChessBoard(this);
+            }
+        }
+
         /// <summary>
         /// Prints the current status of the chess board with chess piece code values.
         /// Optionally a Position enum parameter can be given to highlight the chess pieces pattern on the given Position.
@@ -204,7 +212,7 @@ namespace console_chess.Board
                 string paddingRight = "   ";
 
                 Console.Write($"{paddingLeft}{(position.Value == null ? "-   " : position.Value.Icon + paddingRight)}");
-                Console.ForegroundColor = ConsoleColor.DarkRed; // Reset color, so other elements don't get highlighted
+                Console.ForegroundColor = ConsoleColor.White; // Reset color, so other elements don't get highlighted
                 Console.Write("|");
 
                 // If current position is the last of the row -> Add row number + other elements
