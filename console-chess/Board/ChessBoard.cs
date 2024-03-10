@@ -152,7 +152,7 @@ namespace console_chess.Board
                 // If no chess piece on the position OR the positions chess piece code is positive code -> Add more padding
                 if (position.Value == null || position.Value.Code > 0) Console.Write($"  {(position.Value == null ? 0 : position.Value.Code)}  ");
                 else Console.Write($" {position.Value.Code}  "); // Otherwise add less padding on negative codes
-                Console.ForegroundColor = ConsoleColor.DarkRed; // Reset color, so other elements don't get highlighted
+                Console.ForegroundColor = ConsoleColor.White; // Reset color, so other elements don't get highlighted
                 Console.Write("|");
                 
                 // If current position is the last of the row -> Add row number + other elements

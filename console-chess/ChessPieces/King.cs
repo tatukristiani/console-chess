@@ -30,17 +30,6 @@ namespace console_chess.ChessPieces
 
         /// <summary>
         /// Validates the move for king
-        /// Possible position differences and directions
-        /// UP: -8
-        /// UP DIAGONALLY LEFT: -9
-        /// UP DIAGONALLY RIGHT: -7
-        /// LEFT: -1
-        /// RIGHT: 1
-        /// DOWN: 8
-        /// DOWN DIAGONALLY LEFT: 7
-        /// DOWN DIAGONALLY RIGHT: 9
-        /// SPECIAL DOUBLE MOVE RIGHT: 2
-        /// SPECIAL DOUBLE MOVE LEFT: -2
         /// </summary>
         /// <param name="currentPosition">Position of the king</param>
         /// <param name="newPosition">Possible new position to move the king</param>

@@ -2,6 +2,7 @@
 using console_chess.Board;
 using console_chess.Game;
 using System.Text;
+using console_chess.Players;
 
 namespace console_chess
 {
@@ -9,27 +10,49 @@ namespace console_chess
     {
         static void Main(string[] args)
         {
+            
             Console.OutputEncoding = Encoding.Unicode;
             Console.ForegroundColor = ConsoleColor.White;
-            AGame game = null;
+            AGame? game = null;
+            string? gameMode;
 
-            Console.WriteLine("PvP or AI Game? (PvP/AI): ");
-            string? gameSelect = Console.ReadLine();
+            while (true)
+            {
+                Console.Write("PvP or AI Game? (PvP/AI): ");
+                string? input = Console.ReadLine();
+                gameMode = String.IsNullOrWhiteSpace(input) ? String.Empty : input;
 
-            Console.WriteLine("Use icons? (Y/N): ");
-            string? useIcons = Console.ReadLine();
+                if (gameMode.Equals("PvP", StringComparison.OrdinalIgnoreCase) || gameMode.Equals("AI", StringComparison.OrdinalIgnoreCase))
+                {
+                    break;
+                }
+            }
 
-            if(gameSelect.Equals("PvP", StringComparison.OrdinalIgnoreCase))
+            string? useIcons;
+            while (true)
+            {
+                Console.Write("Use icons? (Y/N): ");
+                string? input = Console.ReadLine();
+                useIcons = String.IsNullOrWhiteSpace(input) ? String.Empty : input;
+
+                if (useIcons.Equals("Y", StringComparison.OrdinalIgnoreCase) || useIcons.Equals("N", StringComparison.OrdinalIgnoreCase))
+                {
+                    break;
+                }
+            }
+
+            if (gameMode.Equals("PvP", StringComparison.OrdinalIgnoreCase))
             {
                 game = new PlayerVsPlayerGame(useIcons.Equals("Y", StringComparison.OrdinalIgnoreCase));
             }
-            else if(gameSelect.Equals("AI", StringComparison.OrdinalIgnoreCase))
+            else if(gameMode.Equals("AI", StringComparison.OrdinalIgnoreCase))
             {
                 game = new AIGame(useIcons.Equals("Y", StringComparison.OrdinalIgnoreCase));
             }
 
 
-            if (game != null) game.StartGame();
+            game?.StartGame();
+            
 
         }
     }
