@@ -53,6 +53,8 @@ namespace console_chess.ChessPieces
 
         public ChessBoard? ChessBoard { get; set; }
 
+        public bool HasMoved { get; set; } = false;
+
 
         /// <summary>
         /// Constructor. Populate Name and Color with code

@@ -42,6 +42,7 @@ namespace console_chess.Board
             if(pieceToMove != null )
             {
                 ChessPiecePositions[newPosition] = pieceToMove;
+                ChessPiecePositions[newPosition].HasMoved = true;
                 ChessPiecePositions[originalPosition] = null;
                 return true;
                 
