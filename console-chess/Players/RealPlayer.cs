@@ -32,13 +32,14 @@ namespace console_chess.Players
                     }
                 }
             }
+            FileLogger.Log($"Valid moves ({this.Color}, {ChessBoard.Instance().GetChessPiece(chosenPosition).Name}):\n{String.Join("\n", possibleMoves.Select(move => $"{move.OldPosition} to {move.NewPosition}"))}");
 
             return new ChosenMove(chosenPosition, possibleMoves);
         }
 
-        public override void MoveChessPiece(Position oldPosition)
+        public override void MoveChessPiece(ChosenMove move)
         {
-            List<Move> possibleMoves = ChessBoard.Instance().GetChessPiece(oldPosition).ListPossibleMoves(oldPosition);
+            List<Move> possibleMoves = move.PossibleMoves;
 
             string? newPos = null;
             Position newPosition = Position.Default;
@@ -49,7 +50,8 @@ namespace console_chess.Players
 
                 if (Enum.TryParse(newPos, out newPosition) && newPosition != Position.Default && possibleMoves.Any(move => move.NewPosition.Equals(newPosition)))
                 {
-                    ChessBoard.Instance().MoveChessPiece(new Move(oldPosition, newPosition));
+                    ChessBoard.Instance().MoveChessPiece(new Move(move.ChosenChessPiecePosition, newPosition));
+                    FileLogger.Log($"{this.Color} moved {move.ChosenChessPiecePosition} to {newPosition}");
                     break;
                 }
             }

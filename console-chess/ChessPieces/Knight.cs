@@ -41,7 +41,7 @@ namespace console_chess.ChessPieces
                 }
                 catch (Exception ex)
                 {
-                    FileLogger.Log("ListPossibleMoves (Knight):\nError: " + ex.Message);
+                    //FileLogger.Log("ListPossibleMoves (Knight):\nError: " + ex.Message);
                 }
             }
 

@@ -50,7 +50,7 @@ namespace console_chess.ChessPieces
             }
             catch(Exception ex)
             {
-                FileLogger.Log("CanMoveUp (King):\nError: " + ex.Message);
+               // FileLogger.Log("CanMoveUp (King):\nError: " + ex.Message);
             }
 
             return false;
@@ -67,7 +67,7 @@ namespace console_chess.ChessPieces
             }
             catch (Exception ex)
             {
-                FileLogger.Log("CanMoveDown (King):\nError: " + ex.Message);
+                //FileLogger.Log("CanMoveDown (King):\nError: " + ex.Message);
             }
 
             return false;
@@ -87,7 +87,7 @@ namespace console_chess.ChessPieces
             }
             catch (Exception ex)
             {
-                FileLogger.Log("CanMoveDown (King):\nError: " + ex.Message);
+                //FileLogger.Log("CanMoveDown (King):\nError: " + ex.Message);
             }
 
             return false;
@@ -107,7 +107,7 @@ namespace console_chess.ChessPieces
             }
             catch (Exception ex)
             {
-                FileLogger.Log("CanMoveDown (King):\nError: " + ex.Message);
+               // FileLogger.Log("CanMoveDown (King):\nError: " + ex.Message);
             }
 
             return false;

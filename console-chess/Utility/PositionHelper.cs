@@ -65,7 +65,7 @@ namespace console_chess.Utility
             }
             catch (Exception e)
             {
-                FileLogger.Log("GetVerticalPossibleMovesUp Error: " + e.Message);
+                //FileLogger.Log("GetVerticalPossibleMovesUp Error: " + e.Message);
             }
 
             return moves;
@@ -101,7 +101,7 @@ namespace console_chess.Utility
             }
             catch (Exception e)
             {
-                FileLogger.Log("GetVerticalPossibleMovesDown Error: " + e.Message);
+               // FileLogger.Log("GetVerticalPossibleMovesDown Error: " + e.Message);
             }
 
             return moves;
@@ -139,7 +139,7 @@ namespace console_chess.Utility
             }
             catch (Exception e)
             {
-                FileLogger.Log("GetHorizontalPossibleMovesRight Error: " + e.Message);
+                //FileLogger.Log("GetHorizontalPossibleMovesRight Error: " + e.Message);
             }
 
             return moves;
@@ -177,7 +177,7 @@ namespace console_chess.Utility
             }
             catch (Exception e)
             {
-                FileLogger.Log("GetHorizontalPossibleMovesLeft Error: " + e.Message);
+                //FileLogger.Log("GetHorizontalPossibleMovesLeft Error: " + e.Message);
             }
 
             return moves;
@@ -211,7 +211,7 @@ namespace console_chess.Utility
             }
             catch (Exception ex)
             {
-                FileLogger.Log("GetPossibleNorthWestMoves:\nError: " + ex.Message);
+               // FileLogger.Log("GetPossibleNorthWestMoves:\nError: " + ex.Message);
             }
 
             return moves;
@@ -244,7 +244,7 @@ namespace console_chess.Utility
             }
             catch (Exception ex)
             {
-                FileLogger.Log("GetPossibleNorthEastMoves:\nError: " + ex.Message);
+                //FileLogger.Log("GetPossibleNorthEastMoves:\nError: " + ex.Message);
             }
 
             return moves;
@@ -277,7 +277,7 @@ namespace console_chess.Utility
             }
             catch (Exception ex)
             {
-                FileLogger.Log("GetPossibleSourthWestMoves:\nError: " + ex.Message);
+               // FileLogger.Log("GetPossibleSourthWestMoves:\nError: " + ex.Message);
             }
 
             return moves;
@@ -310,7 +310,7 @@ namespace console_chess.Utility
             }
             catch (Exception ex)
             {
-                FileLogger.Log("GetPossibleSouthEastMoves:\nError: " + ex.Message);
+                //FileLogger.Log("GetPossibleSouthEastMoves:\nError: " + ex.Message);
             }
 
             return moves;

@@ -18,26 +18,29 @@ namespace console_chess
 
             while (true)
             {
-                Console.Write("PvP or AI Game? (PvP/AI): ");
-                string? input = Console.ReadLine();
-                gameMode = String.IsNullOrWhiteSpace(input) ? String.Empty : input;
-
-                if (gameMode.Equals("PvP", StringComparison.OrdinalIgnoreCase) || gameMode.Equals("AI", StringComparison.OrdinalIgnoreCase))
+                while (true)
                 {
-                    break;
-                }
-            }
-    
-            if (gameMode.Equals("PvP", StringComparison.OrdinalIgnoreCase))
-            {
-                game = new PlayerVsPlayerGame();
-            }
-            else if(gameMode.Equals("AI", StringComparison.OrdinalIgnoreCase))
-            {
-                game = new AIGame();
-            }
+                    Console.Write("PvP or AI Game? (PvP/AI): ");
+                    string? input = Console.ReadLine();
+                    gameMode = String.IsNullOrWhiteSpace(input) ? String.Empty : input;
 
-            game?.StartGame();
+                    if (gameMode.Equals("PvP", StringComparison.OrdinalIgnoreCase) || gameMode.Equals("AI", StringComparison.OrdinalIgnoreCase))
+                    {
+                        break;
+                    }
+                }
+
+                if (gameMode.Equals("PvP", StringComparison.OrdinalIgnoreCase))
+                {
+                    game = new PlayerVsPlayerGame();
+                }
+                else if (gameMode.Equals("AI", StringComparison.OrdinalIgnoreCase))
+                {
+                    game = new AIGame();
+                }
+
+                game?.StartGame();
+            }
             
         }
     }

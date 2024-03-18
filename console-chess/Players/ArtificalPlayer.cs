@@ -24,7 +24,7 @@ namespace console_chess.Players
                 try
                 {
                     Random rnd = new Random();
-                    int num = rnd.Next(60);
+                    int num = rnd.Next(63);
                     AChessPiece? piece = ChessBoard.Instance().GetChessPiece((Position)num);
                     if (piece != null && piece.Color.Equals(this.Color))
                     {
@@ -40,17 +40,20 @@ namespace console_chess.Players
                 }
                 catch(Exception ex)
                 {
-                    FileLogger.Log("ChoosePieceToMove (AI):\nError: " + ex.Message);
+                    //FileLogger.Log("ChoosePieceToMove (AI):\nError: " + ex.Message);
                 }
             }
             
+            FileLogger.Log($"Valid moves ({this.Color}, {ChessBoard.Instance().GetChessPiece(chosenPosition).Name}):\n{String.Join("\n",possibleMoves.Select(move => $"{move.OldPosition} to {move.NewPosition}"))}");
             return new ChosenMove(chosenPosition, possibleMoves);
         }
 
-        public override void MoveChessPiece(Position oldPosition)
+        public override void MoveChessPiece(ChosenMove move)
         {
-            Position newPosition = ChessBoard.Instance().GetChessPiece((Position)oldPosition).ListPossibleMoves(oldPosition).First().NewPosition;
-            ChessBoard.Instance().MoveChessPiece(new Move(oldPosition, newPosition));
+            Position newPosition = move.PossibleMoves.First().NewPosition;
+            ChessBoard.Instance().MoveChessPiece(new Move(move.ChosenChessPiecePosition, newPosition));
+            FileLogger.Log($"{this.Color} moved {move.ChosenChessPiecePosition} to {newPosition}");
+
         }
     }
 }

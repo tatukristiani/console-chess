@@ -47,12 +47,18 @@ namespace console_chess.Board
         }
 
 
+        public void Clear()
+        {
+            this.Board = Populate();
+        }
+
         /**************** Chess Board Logic ***************/
 
         public void MoveChessPiece(Move move)
         {
             Board[move.NewPosition] = Board[move.OldPosition];
             Board[move.OldPosition] = null;
+            Board[move.NewPosition].HasMoved = true;
         }
 
         public AChessPiece? GetChessPiece(Position position)
@@ -81,7 +87,7 @@ namespace console_chess.Board
             }
             catch (Exception ex)
             {
-                FileLogger.Log("MoveExposesKing:\nError: " + ex.Message);
+                //FileLogger.Log("MoveExposesKing:\nError: " + ex.Message);
                 Board = currentBoard;
             }
 
@@ -169,22 +175,28 @@ namespace console_chess.Board
 
         public bool IsCheckMate(Color currentPlayerColor)
         {
-            /*
             // Check if the other player could move any pieces
-            foreach (var pos in ChessPiecePositions)
+            foreach (var pos in Board)
             {
-                AChessPiece? piece = pos.Value;
-
-                if (piece != null && piece.Color != currentTurnPlayerColor)
+                try
                 {
-                    if (ChessPieceCanMove(pos.Key))
+                    AChessPiece? piece = pos.Value;
+
+                    if (piece != null && piece.Color != currentPlayerColor)
                     {
-                        return false;
+                        if (pos.Value.ListValidMoves(pos.Value?.ListPossibleMoves(pos.Key)).Count > 0)
+                        {
+                            return false;
+                        }
                     }
                 }
+                catch(Exception ex)
+                {
+                    // Some logging here?
+                }
             }
-            */
-            return false;
+
+            return true;
         }
 
         private Position GetKingPosition(Color color)

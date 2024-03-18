@@ -73,7 +73,7 @@ namespace console_chess.Game
             ChessBoard.Instance().DisplayPossibleMoves(chosenMove);
 
             /**** Move piece on valid move ****/
-            base.CurrentTurnPlayer.MoveChessPiece(chosenMove.ChosenChessPiecePosition);
+            base.CurrentTurnPlayer.MoveChessPiece(chosenMove);
         }
 
         private void CreatePlayers()

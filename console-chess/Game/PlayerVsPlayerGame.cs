@@ -1,6 +1,7 @@
 ﻿using console_chess.Board;
 using console_chess.ChessPieces;
 using console_chess.Players;
+using console_chess.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,61 +18,50 @@ namespace console_chess.Game
 
         public override void StartGame()
         {
-            /*
             // Create players
             CreatePlayers();
 
             // Start game until it ends
-            while(true)
+            while (true)
             {
                 // Update chess board
-                base.ChessBoard.UpdateChessBoard(null);
-               
+                ChessBoard.Instance().PrintCurrentBoardStatus(null);
+
                 // Print last move
                 base.PrintLastMove();
-
                 Console.WriteLine($"{base.CurrentTurnPlayer.Name}'s turn!");
 
-                // Get input from player which piece to move
-                Position originalPosition = base.CurrentTurnPlayer.GetChessPiecePositionToMove();
+                // Current player makes a move
+                PlayerMakeMove();
 
-                // Get input from player where to move the piece
-                Position newPosition = base.CurrentTurnPlayer.GetNewPositionToMoveChessPiece(originalPosition);
-
-                // Move the chess piece
-                AChessPiece pieceToMove = base.ChessBoard.GetChessPiece(originalPosition);
-                base.CurrentTurnPlayer.Move(originalPosition, newPosition);
-
-                base.ChessBoard.UpdateChessBoard(null);
-
-                // Add move to history
-                base.AddMoveToHistory(pieceToMove, base.CurrentTurnPlayer, originalPosition, newPosition);
+                // Update board
+                ChessBoard.Instance().PrintCurrentBoardStatus(null);
 
                 // Check for check
-                if(IsCheck())
+                if (IsCheck())
                 {
-                    Console.WriteLine($"{base.CurrentTurnPlayer.Name} checked {(base.CurrentTurnPlayer.Color == base.playerOne.Color ? base.PlayerTwo.Name : base.playerOne.Name)}");
+                    Console.WriteLine($"{base.CurrentTurnPlayer.Name} checked {(base.CurrentTurnPlayer.Color == base.PlayerOne.Color ? base.PlayerTwo.Name : base.PlayerOne.Name)}");
 
-                    if(IsCheckMate())
+                    // Check for check mate
+                    if (IsCheckMate())
                     {
                         Console.WriteLine($"Checkmate, {base.CurrentTurnPlayer.Name} WINS!");
-                        while(true)
+                        while (true)
                         {
                             Console.WriteLine("Press anything to leave the game...");
-                            var endgame = Console.ReadLine();
+                            Console.ReadLine();
                             Console.WriteLine("Ending game...");
                             Thread.Sleep(5000);
                             break;
                         }
                         break;
                     }
-                    Thread.Sleep(5000);            
+                    Thread.Sleep(5000);
                 }
 
                 // Change players turn
                 base.ChangeTurn();
             }
-            */
         }
 
         private void CreatePlayers()
@@ -101,7 +91,14 @@ namespace console_chess.Game
 
         public override void PlayerMakeMove()
         {
-            throw new NotImplementedException();
+            /**** Get a valid chess piece to move ****/
+            ChosenMove chosenMove = base.CurrentTurnPlayer.ChoosePieceToMove();
+
+            /**** Display possible moves ****/
+            ChessBoard.Instance().DisplayPossibleMoves(chosenMove);
+
+            /**** Move piece on valid move ****/
+            base.CurrentTurnPlayer.MoveChessPiece(chosenMove);
         }
     }
 }

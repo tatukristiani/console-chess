@@ -20,7 +20,7 @@ namespace console_chess.Players
             Color = color;
         }
 
-        public abstract void MoveChessPiece(Position oldPosition);
+        public abstract void MoveChessPiece(ChosenMove move);
         public abstract ChosenMove ChoosePieceToMove();
     }
 }

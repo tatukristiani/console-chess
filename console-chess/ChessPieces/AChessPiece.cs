@@ -43,11 +43,11 @@ namespace console_chess.ChessPieces
                 }
                 catch (Exception ex)
                 {
-                    FileLogger.Log("ListValidMoves:\nError: " + ex.Message);
+                    //FileLogger.Log("ListValidMoves:\nError: " + ex.Message);
                 }
             }
             
-            return possibleMoves;
+            return validMoves;
         }
     }
 }
