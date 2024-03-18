@@ -33,4 +33,9 @@
     <ProjectReference Include="..\console-chess\console-chess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="TestDataGenerators\" />
+    <Folder Include="UnitTests\" />
+  </ItemGroup>
+
 </Project>

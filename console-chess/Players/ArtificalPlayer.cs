@@ -1,5 +1,6 @@
 ﻿using console_chess.Board;
 using console_chess.ChessPieces;
+using console_chess.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,82 +11,46 @@ namespace console_chess.Players
 {
     public class ArtificalPlayer : APlayer
     {
-        public ArtificalPlayer(string name, ChessBoard board, Color color) : base(name, board, color)
+        public ArtificalPlayer(string name, Color color) : base(name, color)
         {
         }
 
-        public override void ChoosePieceToMove(AChessPiece piece, Position originalPosition)
+        public override ChosenMove ChoosePieceToMove()
         {
-            base.board.ChoosePieceToMove(originalPosition);
-        }
-
-        public override Position GetChessPiecePositionToMove()
-        {
-            bool moveFromIsValid = false;
-            Position originalPosition = Position.Default;
-
-            // Ask which chess piece to move
-            while (!moveFromIsValid)
+            Position chosenPosition;
+            List<Move> possibleMoves = new List<Move>();
+            while (true)
             {
-               // Console.Write("Move From: ");
-
-                Random rnd = new Random();
-                
-                // Rules for moving from the position need to match
-                // Position is valid, Position is not Default, selected chess piece is the current players piece, the piece can move somewhere
-                if (Enum.TryParse(rnd.Next(62).ToString(), out originalPosition)
-                    && !originalPosition.Equals(Position.Default)
-                    && Color == base.board.GetChessPiece(originalPosition)?.Color
-                    && base.board.ChessPieceCanMove(originalPosition)
-                    )
+                try
                 {
-                    moveFromIsValid = true;
+                    Random rnd = new Random();
+                    int num = rnd.Next(60);
+                    AChessPiece? piece = ChessBoard.Instance().GetChessPiece((Position)num);
+                    if (piece != null && piece.Color.Equals(this.Color))
+                    {
+                        List<Move> moves = piece.ListValidMoves(piece.ListPossibleMoves((Position)num));
+
+                        if(moves.Count > 0)
+                        {
+                            chosenPosition = (Position)num;
+                            possibleMoves = moves;
+                            break;
+                        }
+                    } 
                 }
-
-                // Display the path of the chess piece & option to cancel move
-                if (moveFromIsValid)
+                catch(Exception ex)
                 {
-                    //Console.Write(originalPosition.ToString());
-                    ChoosePieceToMove(base.board.GetChessPiece(originalPosition), originalPosition);
-                }
-
-            }
-
-            return originalPosition;
-        }
-
-        public override Position GetNewPositionToMoveChessPiece(Position originalPosition)
-        {
-            bool moveToIsValid = false;
-            Position newPosition = Position.Default;
-
-            // Ask where to move the chess piece
-            while (!moveToIsValid)
-            {
-               // Console.Write("Move To: ");
-
-                Random rnd = new Random();
-
-                // Rules for moving to a new position need to match
-                // Position is valid, Position is not Default, selected chess piece can move to the position
-                if (Enum.TryParse(rnd.Next(63).ToString(), out newPosition)
-                    && newPosition != Position.Default
-                    && base.board.ChessPieceCanBeMovedTo(originalPosition, newPosition)
-                    )
-                {
-                    moveToIsValid = true;
+                    FileLogger.Log("ChoosePieceToMove (AI):\nError: " + ex.Message);
                 }
             }
-
-            //Console.Write(newPosition);
-            //Thread.Sleep(5000);
-
-            return newPosition;
+            
+            return new ChosenMove(chosenPosition, possibleMoves);
         }
 
-        public override bool Move(AChessPiece piece, Position originalPosition, Position newPosition)
+        public override void MoveChessPiece(Position oldPosition)
         {
-            return board.MoveChessPieceOnBoard(piece, originalPosition, newPosition);
+            Position newPosition = ChessBoard.Instance().GetChessPiece((Position)oldPosition).ListPossibleMoves(oldPosition).First().NewPosition;
+            ChessBoard.Instance().MoveChessPiece(new Move(oldPosition, newPosition));
         }
     }
 }

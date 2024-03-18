@@ -1,6 +1,7 @@
 ﻿using console_chess.Board;
 using console_chess.ChessPieces;
 using console_chess.Players;
+using console_chess.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace console_chess.Game
 {
     public class AIGame : AGame
     {
-        public AIGame(bool useIcons) : base(useIcons)
+        public AIGame() : base()
         {
         }
 
@@ -24,40 +25,31 @@ namespace console_chess.Game
             while(true)
             {
                 // Update chess board
-                base.chessBoard.UpdateChessBoard(null);
+                ChessBoard.Instance().PrintCurrentBoardStatus(null);
                
                 // Print last move
                 base.PrintLastMove();
+                Console.WriteLine($"{base.CurrentTurnPlayer.Name}'s turn!");
 
-                Console.WriteLine($"{base.currentTurnPlayer.Name}'s turn!");
+                // Current player makes a move
+                PlayerMakeMove();
 
-                // Get input from player which piece to move
-                Position originalPosition = base.currentTurnPlayer.GetChessPiecePositionToMove();
-
-                // Get input from player where to move the piece
-                Position newPosition = base.currentTurnPlayer.GetNewPositionToMoveChessPiece(originalPosition);
-
-                // Move the chess piece
-                AChessPiece pieceToMove = base.chessBoard.GetChessPiece(originalPosition);
-                base.currentTurnPlayer.Move(pieceToMove, originalPosition, newPosition);
-
-                base.chessBoard.UpdateChessBoard(null);
-
-                // Add move to history
-                base.AddMoveToHistory(pieceToMove, base.currentTurnPlayer, originalPosition, newPosition);
+                // Update board
+                ChessBoard.Instance().PrintCurrentBoardStatus(null);
 
                 // Check for check
-                if(IsCheck())
+                if (IsCheck())
                 {
-                    Console.WriteLine($"{base.currentTurnPlayer.Name} checked {(base.currentTurnPlayer.Color == base.playerOne.Color ? base.playerTwo.Name : base.playerOne.Name)}");
+                    Console.WriteLine($"{base.CurrentTurnPlayer.Name} checked {(base.CurrentTurnPlayer.Color == base.PlayerOne.Color ? base.PlayerTwo.Name : base.PlayerOne.Name)}");
 
+                    // Check for check mate
                     if(IsCheckMate())
                     {
-                        Console.WriteLine($"Checkmate, {base.currentTurnPlayer.Name} WINS!");
+                        Console.WriteLine($"Checkmate, {base.CurrentTurnPlayer.Name} WINS!");
                         while(true)
                         {
                             Console.WriteLine("Press anything to leave the game...");
-                            var endgame = Console.ReadLine();
+                            Console.ReadLine();
                             Console.WriteLine("Ending game...");
                             Thread.Sleep(5000);
                             break;
@@ -72,11 +64,23 @@ namespace console_chess.Game
             }
         }
 
+        public override void PlayerMakeMove()
+        {
+            /**** Get a valid chess piece to move ****/
+            ChosenMove chosenMove = base.CurrentTurnPlayer.ChoosePieceToMove();
+                
+            /**** Display possible moves ****/
+            ChessBoard.Instance().DisplayPossibleMoves(chosenMove);
+
+            /**** Move piece on valid move ****/
+            base.CurrentTurnPlayer.MoveChessPiece(chosenMove.ChosenChessPiecePosition);
+        }
+
         private void CreatePlayers()
         {
-            base.playerOne = CreateUserPlayer();
-            base.playerTwo = CreateAIPlayer();
-            base.currentTurnPlayer = base.playerOne;
+            base.PlayerOne = CreateUserPlayer();
+            base.PlayerTwo = CreateAIPlayer();
+            base.CurrentTurnPlayer = base.PlayerOne;
         }
         
         private APlayer CreateUserPlayer()
@@ -87,7 +91,7 @@ namespace console_chess.Game
                 string? playerName = Console.ReadLine();
                 if (!String.IsNullOrWhiteSpace(playerName))
                 {
-                    return new RealPlayer(playerName, base.chessBoard, Color.White);
+                    return new RealPlayer(playerName, Color.White);
                 }
                 else
                 {
@@ -99,7 +103,7 @@ namespace console_chess.Game
 
         private APlayer CreateAIPlayer()
         {
-            return new ArtificalPlayer("AI", base.chessBoard, Color.Black);
+            return new ArtificalPlayer("AI", Color.Black);
         }
     }
 }

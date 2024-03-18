@@ -1,6 +1,7 @@
 ﻿using console_chess.Board;
 using console_chess.ChessPieces;
 using console_chess.Players;
+using console_chess.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,58 +12,43 @@ namespace console_chess.Game
 {
     public abstract class AGame
     {
-        protected APlayer? playerOne;
-        protected APlayer? playerTwo;
-        protected ChessBoard chessBoard;
-        protected APlayer? currentTurnPlayer;
-        protected List<string> moveHistory = new List<string>();
+        protected APlayer? PlayerOne;
+        protected APlayer? PlayerTwo;
+        protected APlayer? CurrentTurnPlayer;
+        protected List<string> MoveHistory = new List<string>();
 
-        public AGame(bool useIcons)
+        public AGame()
         {
-            this.chessBoard = new ChessBoard(useIcons);
-            currentTurnPlayer = playerOne;
         }
 
         public abstract void StartGame();
 
-        public void PrintGameHistory()
-        {
-            foreach(string move in moveHistory)
-            {
-                Console.WriteLine(move);
-            }
-        }
-
         public void ChangeTurn()
         {
-            if(currentTurnPlayer.Name.Equals(playerOne.Name))
-            {
-                currentTurnPlayer = playerTwo;
-            }
-            else
-            {
-                currentTurnPlayer = playerOne;
-            }
+            if(CurrentTurnPlayer.Name.Equals(PlayerOne.Name)) CurrentTurnPlayer = PlayerTwo;
+            else CurrentTurnPlayer = PlayerOne;
         }
+
+        public abstract void PlayerMakeMove();
 
         public void PrintLastMove()
         {
-            if (moveHistory.Count > 0) Console.WriteLine(moveHistory.Last());
+            if (MoveHistory.Count > 0) Console.WriteLine(MoveHistory.Last());
         }
 
-        public void AddMoveToHistory(AChessPiece piece, APlayer player, Position originalPosition, Position newPosition)
+        public void AddMoveToHistory(AChessPiece piece, APlayer player, Move move)
         {
-            moveHistory.Add($"{player.Name} Moved {piece.Name} From {originalPosition} to {newPosition}.");
+            MoveHistory.Add($"{player.Name} Moved {piece.Name} From {move.OldPosition} to {move.NewPosition}.");
         }
 
         public bool IsCheck()
         {
-            return chessBoard.IsCheck(currentTurnPlayer.Color);
+            return ChessBoard.Instance().IsCheck(CurrentTurnPlayer.Color);
         }
 
         public bool IsCheckMate()
         {
-            return chessBoard.IsCheckMate(currentTurnPlayer.Color);
+            return ChessBoard.Instance().IsCheckMate(CurrentTurnPlayer.Color);
         }
     }
 }

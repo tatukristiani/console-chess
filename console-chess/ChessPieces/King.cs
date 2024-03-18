@@ -11,44 +11,205 @@ namespace console_chess.ChessPieces
 {
     public class King : AChessPiece
     {
-        private List<int> possibleDifferences = new List<int>()
+        public King(Color color) : base(color)
         {
-            1, -1, 7, -7, 8, -8, 9, -9
-        };
-
-        public King(int code) : base(code)
-        {
+            this.Name = "King";
+            this.Icon = color.Equals(Color.White) ? "♔" : "♚";
         }
 
-        public King(Color color) : base(color) 
+        public override List<Move> ListPossibleMoves(Position originalPos)
         {
-            int code = this.Color == Color.White ? 6 : -6;
-            this.Code = code;
-            this.Name = base.ChessPieceInformation[code].Item1;
-            this.Icon = base.ChessPieceInformation[code].Item2;
+            List<Move> possibleMoves = new List<Move>();
+
+            // Check if up is valid
+            if (CanMoveUp(originalPos)) possibleMoves.Add(new Move(originalPos, originalPos + 8));
+
+            // Check if down is valid
+            if (CanMoveDown(originalPos)) possibleMoves.Add(new Move(originalPos, originalPos - 8));
+
+            // Check if left is valid
+            if (CanMoveLeft(originalPos)) possibleMoves.Add(new Move(originalPos, originalPos - 1));
+
+            // Check if right is valid
+            if (CanMoveRight(originalPos)) possibleMoves.Add(new Move(originalPos, originalPos + 1));
+
+            // Get possible diagonal moves  
+            possibleMoves.AddRange(GetPossibleDiagonalMoves(originalPos));
+
+            return possibleMoves;
         }
 
-        /// <summary>
-        /// Validates the move for king
-        /// </summary>
-        /// <param name="currentPosition">Position of the king</param>
-        /// <param name="newPosition">Possible new position to move the king</param>
-        /// <param name="chessPieceBoard">Current status of the chess board</param>
-        /// <returns>bool true when move is valid, false otherwise</returns>
-        public override bool IsValidMove(Position currentPosition, Position newPosition, Dictionary<Position, AChessPiece?> chessPieceBoard)
+        private bool CanMoveUp(Position originalPosition)
         {
-            int positionDifference = newPosition - currentPosition;
-            AChessPiece? pieceOnNewPos = chessPieceBoard[newPosition];
-            bool pieceOnPosIsNotOwn = pieceOnNewPos == null || (pieceOnNewPos != null && pieceOnNewPos.Color != base.Color);
+            try
+            {
+                Position newPos = originalPosition + 8;
+                AChessPiece? piece = ChessBoard.Instance().GetChessPiece(newPos);
 
-            // First validate normal moves
-            bool normalMoveIsValid = (possibleDifferences.Contains(positionDifference) && pieceOnPosIsNotOwn && ( Math.Abs(AlphabetIndex.GetIndex(currentPosition) - AlphabetIndex.GetIndex(newPosition)) <= 1)) && !MoveExposesKing(currentPosition, newPosition, chessPieceBoard);
+                if (piece == null || piece.Color != this.Color) return true;
+            }
+            catch(Exception ex)
+            {
+                FileLogger.Log("CanMoveUp (King):\nError: " + ex.Message);
+            }
 
-            // After that check if castling is possibl
-            bool castlingCanBeDone = ValidateCastling(currentPosition, newPosition, chessPieceBoard);
-
-            return normalMoveIsValid || castlingCanBeDone;
+            return false;
         }
+
+        private bool CanMoveDown(Position originalPosition)
+        {
+            try
+            {
+                Position newPos = originalPosition - 8;
+                AChessPiece? piece = ChessBoard.Instance().GetChessPiece(newPos);
+
+                if (piece == null || piece.Color != this.Color) return true;
+            }
+            catch (Exception ex)
+            {
+                FileLogger.Log("CanMoveDown (King):\nError: " + ex.Message);
+            }
+
+            return false;
+        }
+
+        private bool CanMoveLeft(Position originalPosition)
+        {
+            try
+            {
+                Position newPos = originalPosition - 1;
+
+                if (!AlphabetIndex.PositionNumbersMatch(originalPosition, newPos)) return false;
+
+                AChessPiece? piece = ChessBoard.Instance().GetChessPiece(newPos);
+
+                if (piece == null || piece.Color != this.Color) return true;
+            }
+            catch (Exception ex)
+            {
+                FileLogger.Log("CanMoveDown (King):\nError: " + ex.Message);
+            }
+
+            return false;
+        }
+
+        private bool CanMoveRight(Position originalPosition)
+        {
+            try
+            {
+                Position newPos = originalPosition + 1;
+
+                if (!AlphabetIndex.PositionNumbersMatch(originalPosition, newPos)) return false;
+
+                AChessPiece? piece = ChessBoard.Instance().GetChessPiece(newPos);
+
+                if (piece == null || piece.Color != this.Color) return true;
+            }
+            catch (Exception ex)
+            {
+                FileLogger.Log("CanMoveDown (King):\nError: " + ex.Message);
+            }
+
+            return false;
+        }
+
+
+        private List<Move> GetPossibleDiagonalMoves(Position originalPosition)
+        {
+            List<Move> moves = new List<Move>();
+
+            // Here cant move down
+            if(PositionHelper.IsOnBottomRow(originalPosition))
+            {
+                if(PositionHelper.IsLeftMostPosition(originalPosition))
+                {
+                    AChessPiece? piece = ChessBoard.Instance().GetChessPiece(originalPosition - 7);
+                    if(piece == null || piece.Color != this.Color)
+                    {
+                        moves.Add(new Move(originalPosition, originalPosition - 7));
+                    }
+                }
+                else if(PositionHelper.IsRightMostPosition(originalPosition))
+                {
+                    AChessPiece? piece = ChessBoard.Instance().GetChessPiece(originalPosition - 9);
+                    if (piece == null || piece.Color != this.Color)
+                    {
+                        moves.Add(new Move(originalPosition, originalPosition - 9));
+                    }
+                }
+                else
+                {
+                    AChessPiece? pieceOnRightSide = ChessBoard.Instance().GetChessPiece(originalPosition - 7);
+                    AChessPiece? pieceOnLeftSide = ChessBoard.Instance().GetChessPiece(originalPosition - 9);
+
+                    if (pieceOnRightSide == null || pieceOnRightSide.Color != this.Color) moves.Add(new Move(originalPosition, originalPosition - 7));
+                    if (pieceOnLeftSide == null || pieceOnLeftSide.Color != this.Color) moves.Add(new Move(originalPosition, originalPosition - 9));
+                }
+            }
+            // Here cant move up
+            else if(PositionHelper.IsOnTopRow(originalPosition))
+            {
+                if (PositionHelper.IsLeftMostPosition(originalPosition))
+                {
+                    AChessPiece? piece = ChessBoard.Instance().GetChessPiece(originalPosition + 9);
+                    if (piece == null || piece.Color != this.Color)
+                    {
+                        moves.Add(new Move(originalPosition, originalPosition + 9));
+                    }
+                }
+                else if (PositionHelper.IsRightMostPosition(originalPosition))
+                {
+                    AChessPiece? piece = ChessBoard.Instance().GetChessPiece(originalPosition + 7);
+                    if (piece == null || piece.Color != this.Color)
+                    {
+                        moves.Add(new Move(originalPosition, originalPosition + 7));
+                    }
+                }
+                else
+                {
+                    AChessPiece? pieceOnRightSide = ChessBoard.Instance().GetChessPiece(originalPosition + 9);
+                    AChessPiece? pieceOnLeftSide = ChessBoard.Instance().GetChessPiece(originalPosition + 7);
+
+                    if (pieceOnRightSide == null || pieceOnRightSide.Color != this.Color) moves.Add(new Move(originalPosition, originalPosition + 9));
+                    if (pieceOnLeftSide == null || pieceOnLeftSide.Color != this.Color) moves.Add(new Move(originalPosition, originalPosition + 7));
+                }
+            }
+            // Here could move anywhere
+            else
+            {
+                if (PositionHelper.IsLeftMostPosition(originalPosition))
+                {
+                    AChessPiece? pieceUpward = ChessBoard.Instance().GetChessPiece(originalPosition - 7);
+                    AChessPiece? pieceDownward = ChessBoard.Instance().GetChessPiece(originalPosition + 9);
+
+                    if (pieceUpward == null || pieceUpward.Color != this.Color) moves.Add(new Move(originalPosition, originalPosition - 7));
+                    if (pieceDownward == null || pieceDownward.Color != this.Color) moves.Add(new Move(originalPosition, originalPosition + 9));
+                }
+                else if (PositionHelper.IsRightMostPosition(originalPosition))
+                {
+                    AChessPiece? pieceUpward = ChessBoard.Instance().GetChessPiece(originalPosition - 9);
+                    AChessPiece? pieceDownward = ChessBoard.Instance().GetChessPiece(originalPosition + 7);
+
+                    if (pieceUpward == null || pieceUpward.Color != this.Color) moves.Add(new Move(originalPosition, originalPosition - 9));
+                    if (pieceDownward == null || pieceDownward.Color != this.Color) moves.Add(new Move(originalPosition, originalPosition + 7));
+                }
+                else
+                {
+                    AChessPiece? northWestPiece = ChessBoard.Instance().GetChessPiece(originalPosition - 9);
+                    AChessPiece? southWestPiece = ChessBoard.Instance().GetChessPiece(originalPosition + 7);
+                    AChessPiece? southEastPiece = ChessBoard.Instance().GetChessPiece(originalPosition + 9);
+                    AChessPiece? northEastPiece = ChessBoard.Instance().GetChessPiece(originalPosition - 7);
+
+                    if (northWestPiece == null || northWestPiece.Color != this.Color) moves.Add(new Move(originalPosition, originalPosition - 9));
+                    if (southWestPiece == null || southWestPiece.Color != this.Color) moves.Add(new Move(originalPosition, originalPosition + 7));
+                    if (southEastPiece == null || southEastPiece.Color != this.Color) moves.Add(new Move(originalPosition, originalPosition + 9));
+                    if (northEastPiece == null || northEastPiece.Color != this.Color) moves.Add(new Move(originalPosition, originalPosition - 7));
+                }
+            }
+
+            return moves;
+        }
+
 
         /// <summary>
         /// Castling rules.
@@ -63,6 +224,7 @@ namespace console_chess.ChessPieces
         /// <returns>true when castling is valid, false otherwise</returns>
         private bool ValidateCastling(Position currentPosition, Position newPosition, Dictionary<Position, AChessPiece?> chessPieceBoard)
         {
+            /*
             if (base.HasMoved) return false; // First part of the rule 1.
 
             // Get the move difference to the new position
@@ -130,7 +292,7 @@ namespace console_chess.ChessPieces
                     return true;
                 }
             }
-
+            */
             return false;
         }
     }

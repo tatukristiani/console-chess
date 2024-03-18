@@ -27,33 +27,18 @@ namespace console_chess
                     break;
                 }
             }
-
-            string? useIcons;
-            while (true)
-            {
-                Console.Write("Use icons? (Y/N): ");
-                string? input = Console.ReadLine();
-                useIcons = String.IsNullOrWhiteSpace(input) ? String.Empty : input;
-
-                if (useIcons.Equals("Y", StringComparison.OrdinalIgnoreCase) || useIcons.Equals("N", StringComparison.OrdinalIgnoreCase))
-                {
-                    break;
-                }
-            }
-
+    
             if (gameMode.Equals("PvP", StringComparison.OrdinalIgnoreCase))
             {
-                game = new PlayerVsPlayerGame(useIcons.Equals("Y", StringComparison.OrdinalIgnoreCase));
+                game = new PlayerVsPlayerGame();
             }
             else if(gameMode.Equals("AI", StringComparison.OrdinalIgnoreCase))
             {
-                game = new AIGame(useIcons.Equals("Y", StringComparison.OrdinalIgnoreCase));
+                game = new AIGame();
             }
-
 
             game?.StartGame();
             
-
         }
     }
 }

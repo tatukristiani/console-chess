@@ -1,5 +1,6 @@
 ﻿using console_chess.Board;
 using console_chess.ChessPieces;
+using console_chess.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,77 +11,48 @@ namespace console_chess.Players
 {
     public class RealPlayer : APlayer
     {
-        public RealPlayer(string name, ChessBoard board, Color color) : base(name, board, color) { }
+        public RealPlayer(string name, Color color) : base(name, color) { }
 
-        public override void ChoosePieceToMove(AChessPiece piece, Position originalPosition)
+        public override ChosenMove ChoosePieceToMove()
         {
-            base.board.ChoosePieceToMove(originalPosition);
-        }
-
-        public override bool Move(AChessPiece piece, Position originalPosition, Position newPosition)
-        {
-            return board.MoveChessPieceOnBoard(piece, originalPosition, newPosition);
-        }
-
-        public override Position GetChessPiecePositionToMove()
-        {
-            bool moveFromIsValid = false;
-            Position originalPosition = Position.Default;
-            string? lockMove = null;
-
-            // Ask which chess piece to move, option to cancel
-            while (!moveFromIsValid || lockMove == null || !lockMove.Equals("Y", StringComparison.OrdinalIgnoreCase))
+            List<Move> possibleMoves = new List<Move>();
+            Position chosenPosition;
+            while (true)
             {
-                Console.Write("Move From: ");
+                Console.WriteLine("Choose piece to move: ");
+                string? piecePos = Console.ReadLine();
 
-                // Rules for moving from the position need to match
-                // Position is valid, Position is not Default, selected chess piece is the current players piece, the piece can move somewhere
-                if (Enum.TryParse(Console.ReadLine(), out originalPosition)
-                    && !originalPosition.Equals(Position.Default)
-                    && Color == base.board.GetChessPiece(originalPosition)?.Color
-                    && base.board.ChessPieceCanMove(originalPosition)
-                    )
+                if (Enum.TryParse(piecePos, out chosenPosition) && chosenPosition != Position.Default)
                 {
-                    moveFromIsValid = true;
+                    AChessPiece? piece = ChessBoard.Instance().GetChessPiece(chosenPosition);
+                    if (piece != null && piece.Color.Equals(this.Color))
+                    {
+                        possibleMoves = piece.ListValidMoves(piece.ListPossibleMoves(chosenPosition));
+                        if (possibleMoves.Count > 0) break;
+                    }
                 }
-
-                // Display the path of the chess piece & option to cancel move
-                if (moveFromIsValid)
-                {
-                    ChoosePieceToMove(base.board.GetChessPiece(originalPosition), originalPosition);
-
-                    Console.Write("Confirm Piece to Move (Y/N): ");
-                    lockMove = Console.ReadLine();
-                    if (lockMove == null || !lockMove.Equals("Y", StringComparison.OrdinalIgnoreCase)) base.board.UpdateChessBoard(null);
-                }
-
             }
 
-            return originalPosition;
+            return new ChosenMove(chosenPosition, possibleMoves);
         }
 
-        public override Position GetNewPositionToMoveChessPiece(Position originalPosition)
+        public override void MoveChessPiece(Position oldPosition)
         {
-            bool moveToIsValid = false;
+            List<Move> possibleMoves = ChessBoard.Instance().GetChessPiece(oldPosition).ListPossibleMoves(oldPosition);
+
+            string? newPos = null;
             Position newPosition = Position.Default;
-
-            // Ask where to move the chess piece
-            while (!moveToIsValid)
+            while (true)
             {
-                Console.Write("Move To: ");
+                Console.WriteLine("Where to move: ");
+                newPos = Console.ReadLine();
 
-                // Rules for moving to a new position need to match
-                // Position is valid, Position is not Default, selected chess piece can move to the position
-                if (Enum.TryParse(Console.ReadLine(), out newPosition)
-                    && newPosition != Position.Default
-                    && base.board.ChessPieceCanBeMovedTo(originalPosition, newPosition)
-                    )
+                if (Enum.TryParse(newPos, out newPosition) && newPosition != Position.Default && possibleMoves.Any(move => move.NewPosition.Equals(newPosition)))
                 {
-                    moveToIsValid = true;
+                    ChessBoard.Instance().MoveChessPiece(new Move(oldPosition, newPosition));
+                    break;
                 }
             }
-
-            return newPosition;
         }
     }
 }

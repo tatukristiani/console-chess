@@ -11,12 +11,13 @@ namespace console_chess.Game
 {
     public class PlayerVsPlayerGame : AGame
     {
-        public PlayerVsPlayerGame(bool useIcons) : base(useIcons)
+        public PlayerVsPlayerGame() : base()
         {
         }
 
         public override void StartGame()
         {
+            /*
             // Create players
             CreatePlayers();
 
@@ -24,36 +25,36 @@ namespace console_chess.Game
             while(true)
             {
                 // Update chess board
-                base.chessBoard.UpdateChessBoard(null);
+                base.ChessBoard.UpdateChessBoard(null);
                
                 // Print last move
                 base.PrintLastMove();
 
-                Console.WriteLine($"{base.currentTurnPlayer.Name}'s turn!");
+                Console.WriteLine($"{base.CurrentTurnPlayer.Name}'s turn!");
 
                 // Get input from player which piece to move
-                Position originalPosition = base.currentTurnPlayer.GetChessPiecePositionToMove();
+                Position originalPosition = base.CurrentTurnPlayer.GetChessPiecePositionToMove();
 
                 // Get input from player where to move the piece
-                Position newPosition = base.currentTurnPlayer.GetNewPositionToMoveChessPiece(originalPosition);
+                Position newPosition = base.CurrentTurnPlayer.GetNewPositionToMoveChessPiece(originalPosition);
 
                 // Move the chess piece
-                AChessPiece pieceToMove = base.chessBoard.GetChessPiece(originalPosition);
-                base.currentTurnPlayer.Move(pieceToMove, originalPosition, newPosition);
+                AChessPiece pieceToMove = base.ChessBoard.GetChessPiece(originalPosition);
+                base.CurrentTurnPlayer.Move(originalPosition, newPosition);
 
-                base.chessBoard.UpdateChessBoard(null);
+                base.ChessBoard.UpdateChessBoard(null);
 
                 // Add move to history
-                base.AddMoveToHistory(pieceToMove, base.currentTurnPlayer, originalPosition, newPosition);
+                base.AddMoveToHistory(pieceToMove, base.CurrentTurnPlayer, originalPosition, newPosition);
 
                 // Check for check
                 if(IsCheck())
                 {
-                    Console.WriteLine($"{base.currentTurnPlayer.Name} checked {(base.currentTurnPlayer.Color == base.playerOne.Color ? base.playerTwo.Name : base.playerOne.Name)}");
+                    Console.WriteLine($"{base.CurrentTurnPlayer.Name} checked {(base.CurrentTurnPlayer.Color == base.playerOne.Color ? base.PlayerTwo.Name : base.playerOne.Name)}");
 
                     if(IsCheckMate())
                     {
-                        Console.WriteLine($"Checkmate, {base.currentTurnPlayer.Name} WINS!");
+                        Console.WriteLine($"Checkmate, {base.CurrentTurnPlayer.Name} WINS!");
                         while(true)
                         {
                             Console.WriteLine("Press anything to leave the game...");
@@ -70,24 +71,25 @@ namespace console_chess.Game
                 // Change players turn
                 base.ChangeTurn();
             }
+            */
         }
 
         private void CreatePlayers()
         {
-            base.playerOne = CreatePlayer(1);
-            base.playerTwo = CreatePlayer(2);
-            base.currentTurnPlayer = base.playerOne;
+            base.PlayerOne = CreatePlayer(Color.White);
+            base.PlayerTwo = CreatePlayer(Color.Black);
+            base.CurrentTurnPlayer = base.PlayerOne;
         }
 
-        private APlayer CreatePlayer(int playerNumber)
+        private APlayer CreatePlayer(Color color)
         {
             while(true)
             {
-                Console.Write($"Player {playerNumber} Name: ");
+                Console.Write($"{color} Players Name: ");
                 string? playerName = Console.ReadLine();
                 if(!String.IsNullOrWhiteSpace(playerName))
                 {
-                    return new RealPlayer(playerName, base.chessBoard, playerNumber == 1 ? Color.White : Color.Black);
+                    return new RealPlayer(playerName, color);
                 }
                 else
                 {
@@ -96,6 +98,10 @@ namespace console_chess.Game
 
             }
         }
-      
+
+        public override void PlayerMakeMove()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

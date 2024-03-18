@@ -1,5 +1,6 @@
 ﻿using console_chess.Board;
 using console_chess.ChessPieces;
+using console_chess.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,21 +12,15 @@ namespace console_chess.Players
     public abstract class APlayer
     {
         public string Name { get; set; }
-        public ChessBoard board;
         public Color Color { get; set; }
 
-        public APlayer(string name, ChessBoard board, Color color)
+        public APlayer(string name, Color color)
         {
             Name = name;
-            this.board = board;
             Color = color;
         }
 
-        public abstract bool Move(AChessPiece piece, Position originalPosition, Position newPosition);
-
-        public abstract void ChoosePieceToMove(AChessPiece piece, Position originalPosition);
-
-        public abstract Position GetChessPiecePositionToMove();
-        public abstract Position GetNewPositionToMoveChessPiece(Position originalPosition);
+        public abstract void MoveChessPiece(Position oldPosition);
+        public abstract ChosenMove ChoosePieceToMove();
     }
 }
