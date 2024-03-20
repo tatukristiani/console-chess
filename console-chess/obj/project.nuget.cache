@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "38KT53MxQiyaXAdDQshXwgNu0X2R1IeDtGp45xUFKFdnV3r7lMSDCFVQ9TQoM6QOcDk5pHNiROMsrbwDQ7nadw==",
+  "dgSpecHash": "6Ue5njeyaW4tbmh9qXshK94h2Djo70YePFtNCBNoXApZKyJquLQGM6KepMY2XNMn1lsRVmgL5AN0FrYKkL3e0A==",
   "success": true,
-  "projectFilePath": "C:\\Users\\tatuk\\source\\repos\\console-chess\\console-chess\\console-chess.csproj",
+  "projectFilePath": "C:\\Projects\\console-chess\\console-chess\\console-chess.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\tatuk\\.nuget\\packages\\serilog\\2.10.0\\serilog.2.10.0.nupkg.sha512",
-    "C:\\Users\\tatuk\\.nuget\\packages\\serilog.sinks.file\\5.0.0\\serilog.sinks.file.5.0.0.nupkg.sha512"
+    "C:\\Users\\Tatu\\.nuget\\packages\\serilog\\2.10.0\\serilog.2.10.0.nupkg.sha512",
+    "C:\\Users\\Tatu\\.nuget\\packages\\serilog.sinks.file\\5.0.0\\serilog.sinks.file.5.0.0.nupkg.sha512"
   ],
   "logs": []
 }

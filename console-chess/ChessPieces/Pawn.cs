@@ -51,6 +51,27 @@ namespace console_chess.ChessPieces
             return possibleMoves;
         }
 
+        public override List<Move> ListValidMoves(List<Move> possibleMoves)
+        {
+            List<Move> validMoves = new List<Move>();
+            foreach (Move move in possibleMoves)
+            {
+                try
+                {
+                    if (!ChessBoard.Instance().MoveExposesKing(move, this.Color))
+                    {
+                        validMoves.Add(move);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //FileLogger.Log("ListValidMoves:\nError: " + ex.Message);
+                }
+            }
+
+            return validMoves;
+        }
+
         private bool NoBlockersForDoubleMove(Position originalPosition)
         {
             int advance = this.Color.Equals(Color.White) ? WhiteAdvanceForward : BlackAdvanceForward;

@@ -12,7 +12,7 @@ namespace console_chess.Utility
     {
         private static readonly string DirectoryLaptop = "C:\\Users\\tatuk\\OneDrive\\Desktop\\CodingDir\\";
         private static readonly string DirectoryPC = "C:\\Users\\Tatu\\Desktop\\Coding\\ConsoleChessLogs\\";
-        private static Logger Logger = new LoggerConfiguration().WriteTo.File($"{DirectoryLaptop}logs.txt", rollingInterval: RollingInterval.Day).CreateLogger();
+        private static Logger Logger = new LoggerConfiguration().WriteTo.File($"{DirectoryPC}logs.txt", rollingInterval: RollingInterval.Day).CreateLogger();
 
         public static void Log(string message)
         {

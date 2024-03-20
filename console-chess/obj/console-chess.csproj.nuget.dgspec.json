@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\tatuk\\source\\repos\\console-chess\\console-chess\\console-chess.csproj": {}
+    "C:\\Projects\\console-chess\\console-chess\\console-chess.csproj": {}
   },
   "projects": {
-    "C:\\Users\\tatuk\\source\\repos\\console-chess\\console-chess\\console-chess.csproj": {
+    "C:\\Projects\\console-chess\\console-chess\\console-chess.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\tatuk\\source\\repos\\console-chess\\console-chess\\console-chess.csproj",
+        "projectUniqueName": "C:\\Projects\\console-chess\\console-chess\\console-chess.csproj",
         "projectName": "console-chess",
-        "projectPath": "C:\\Users\\tatuk\\source\\repos\\console-chess\\console-chess\\console-chess.csproj",
-        "packagesPath": "C:\\Users\\tatuk\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\tatuk\\source\\repos\\console-chess\\console-chess\\obj\\",
+        "projectPath": "C:\\Projects\\console-chess\\console-chess\\console-chess.csproj",
+        "packagesPath": "C:\\Users\\Tatu\\.nuget\\packages\\",
+        "outputPath": "C:\\Projects\\console-chess\\console-chess\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\tatuk\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Tatu\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -71,7 +71,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.200/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

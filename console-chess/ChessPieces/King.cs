@@ -36,7 +36,43 @@ namespace console_chess.ChessPieces
             // Get possible diagonal moves  
             possibleMoves.AddRange(GetPossibleDiagonalMoves(originalPos));
 
+            // Get castling move to right
+            if (CanCastleRight(originalPos)) possibleMoves.Add(new Move(originalPos, originalPos + 2));
+
+            // Get castling move to left
+            if (CanCastleLeft(originalPos)) possibleMoves.Add(new Move(originalPos, originalPos - 2));
+            
+            FileLogger.Log($"{this.Color} King ListPossibleMoves done");
+
             return possibleMoves;
+        }
+
+        public override List<Move> ListValidMoves(List<Move> possibleMoves)
+        {
+            List<Move> validMoves = new List<Move>();
+            foreach (Move move in possibleMoves)
+            {
+                try
+                {
+                    if(AlphabetIndex.GetAbsoluteIndexDiff(move) == 2)
+                    {
+                        validMoves.Add(move);
+                    }
+                    else
+                    {
+                        if (!ChessBoard.Instance().MoveExposesKing(move, this.Color))
+                        {
+                            validMoves.Add(move);
+                        }
+                    }    
+                }
+                catch (Exception ex)
+                {
+                    //FileLogger.Log("ListValidMoves:\nError: " + ex.Message);
+                }
+            }
+
+            return validMoves;
         }
 
         private bool CanMoveUp(Position originalPosition)
@@ -210,89 +246,83 @@ namespace console_chess.ChessPieces
             return moves;
         }
 
-
-        /// <summary>
-        /// Castling rules.
-        /// 1. Neither the king nor the rook has previously moved.
-        /// 2. There are no pieces between the king and the rook.
-        /// 3. The king is not currently in check.
-        /// 4. The king does not pass through or finish on a square that is attacked by an enemy piece.
-        /// </summary>
-        /// <param name="currentPosition">Current position of the king</param>
-        /// <param name="newPosition">New position to validate</param>
-        /// <param name="chessPieceBoard">Current status of the chess board</param>
-        /// <returns>true when castling is valid, false otherwise</returns>
-        private bool ValidateCastling(Position currentPosition, Position newPosition, Dictionary<Position, AChessPiece?> chessPieceBoard)
+        private bool CanCastleRight(Position originalPosition)
         {
-            /*
-            if (base.HasMoved) return false; // First part of the rule 1.
+            if (this.HasMoved) return false;
 
-            // Get the move difference to the new position
-            int moveDifference = AlphabetIndex.GetIndex(newPosition) - AlphabetIndex.GetIndex(currentPosition);
+            AChessPiece? piece = ChessBoard.Instance().GetChessPiece(this.Color.Equals(Color.White) ? Position.H1 : Position.H8);
 
-            // Validate that it is exacly 2 moves (left or right)
-            if(moveDifference == 2 || moveDifference == -2)
+            if (piece != null && piece.GetType().Equals(typeof(Rook)) && piece.Color.Equals(this.Color))
             {
-                bool newPosOnTheRight = moveDifference == 2;
-
-                // Get the rook and its position
-                var rookInformation = chessPieceBoard
-                .Where(pos =>
-                    pos.Value != null &&
-                    pos.Value.HasMoved == false && // Second part of the rule 1.
-                    pos.Value.Color == base.Color &&
-                    pos.Value.GetType() == typeof(Tower) &&
-                        (
-                            AlphabetIndex.GetIndex(pos.Key) - AlphabetIndex.GetIndex(currentPosition) > 0 && newPosOnTheRight
-                        )
-                        ||
-                        (
-                            AlphabetIndex.GetIndex(pos.Key) - AlphabetIndex.GetIndex(currentPosition) < 0 && !newPosOnTheRight
-                        )
-                    )
-                    .Select(pos => new
-                    {
-                        position = pos.Key,
-                        piece = pos.Value
-                    }).FirstOrDefault();
-
-                if ( rookInformation != null )
+                // Check that there are no pieces between the king and the rook
+                for (int i = 1; i <= 2; i++)
                 {
-                    int direction = moveDifference == 2 ? 1 : -1;
-                    int nextPos = (int)currentPosition + direction;
-                    // Check rule 2.
-                    while(true)
-                    {
-                        if (nextPos == (int)rookInformation.position) break;
-                        AChessPiece? piece = chessPieceBoard[(Position)nextPos];
-                        if (piece != null) return false;
-
-                        nextPos += direction;
-                    }
-
-                    // Check rule 3.
-                    if (base.ChessBoard.IsCheck(base.Color.Equals(Color.White) ? Color.Black : Color.White)) return false;
-
-                    // Check rule 4.
-                    int nextPosRuleFour = (int)currentPosition + direction;
-                    for(int i = 0; i < 2; i++)
-                    {
-                        // Check all the enemy pieces if they could move to the positition
-                        foreach(var pos in chessPieceBoard)
-                        {
-                            AChessPiece? piece = pos.Value;
-                            if(piece != null && piece.Color != base.Color)
-                            {
-                                if (pos.Value.IsValidMove(pos.Key, (Position)nextPosRuleFour, chessPieceBoard)) return false;
-                            }
-                        }
-                        nextPosRuleFour += direction;
-                    }
-
-                    return true;
+                    AChessPiece? pieceOnPath = ChessBoard.Instance().GetChessPiece((Position)((int)originalPosition + i));
+                    if (pieceOnPath != null) return false;
                 }
+
+                // Check that the king is not in check currently
+                if (ChessBoard.Instance().IsCheck(this.Color.Equals(Color.White) ? Color.Black : Color.White)) return false;
+
+                // Check that enemy pieces are not attacking a square that the king passes or finishes at
+                for (int j = 1; j <= 2; j++)
+                {
+                    Position positionToCheck = originalPosition + j;
+                    ChessBoard.Instance().MoveKingForValidation(new Move(originalPosition, positionToCheck));
+                    if (ChessBoard.Instance().IsCheck(this.Color.Equals(Color.White) ? Color.Black : Color.White))
+                    {
+                        ChessBoard.Instance().MoveKingForValidation(new Move(positionToCheck, originalPosition));
+                        return false;
+                    }
+                    ChessBoard.Instance().MoveKingForValidation(new Move(positionToCheck, originalPosition));
+                }
+
+                // Check that after the castling the king is not in check
+                if (ChessBoard.Instance().CastlingExposesKing(new Move(originalPosition, originalPosition + 2), this.Color)) return false;
+
+                return true;
             }
-            */
+
+            return false;
+        }
+
+        private bool CanCastleLeft(Position originalPosition)
+        {
+            if(this.HasMoved) return false;
+
+            AChessPiece? piece = ChessBoard.Instance().GetChessPiece(this.Color.Equals(Color.White) ? Position.A1 : Position.A8);
+
+            if(piece != null && piece.GetType().Equals(typeof(Rook)) && piece.Color.Equals(this.Color))
+            {
+                // Check that there are no pieces between the king and the rook
+                for(int i = 1; i <= 3; i++)
+                {
+                    AChessPiece? pieceOnPath = ChessBoard.Instance().GetChessPiece(originalPosition - i);
+                    if (pieceOnPath != null) return false;
+                }
+
+                // Check that the king is not in check currently
+                if (ChessBoard.Instance().IsCheck(this.Color.Equals(Color.White) ? Color.Black : Color.White)) return false;
+
+                // Check that enemy pieces are not attacking a square that the king passes or finishes at
+                for(int j = 1; j <= 2; j++)
+                {
+                    Position positionToCheck = originalPosition - j;
+                    ChessBoard.Instance().MoveKingForValidation(new Move(originalPosition, positionToCheck));
+                    if (ChessBoard.Instance().IsCheck(this.Color.Equals(Color.White) ? Color.Black : Color.White))
+                    {
+                        ChessBoard.Instance().MoveKingForValidation(new Move(positionToCheck, originalPosition));
+                        return false;
+                    }
+                    ChessBoard.Instance().MoveKingForValidation(new Move(positionToCheck, originalPosition));
+                }
+
+                // Check that after the castling the king is not in check
+                if (ChessBoard.Instance().CastlingExposesKing(new Move(originalPosition, originalPosition - 2), this.Color)) return false;
+
+                return true;
+            }
+
             return false;
         }
     }

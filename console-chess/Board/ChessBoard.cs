@@ -56,14 +56,42 @@ namespace console_chess.Board
 
         public void MoveChessPiece(Move move)
         {
+            // Check if King & castling move
+            AChessPiece? pieceToMove = Board[move.OldPosition];
+            if (pieceToMove.GetType().Equals(typeof(King)) && AlphabetIndex.GetAbsoluteIndexDiff(move) == 2)
+            {
+                Board[move.NewPosition] = Board[move.OldPosition];
+                Board[move.OldPosition] = null;
+                Position rookOldPos = AlphabetIndex.GetIndexDiff(move) < 0 ? move.OldPosition - 4 : move.OldPosition + 3;
+                Position rookNewPos = AlphabetIndex.GetIndexDiff(move) < 0 ? move.NewPosition + 1 : move.NewPosition - 1;
+                Board[rookNewPos] = Board[rookOldPos];
+                Board[rookOldPos] = null;
+
+                Board[move.NewPosition].HasMoved = true;
+                Board[rookNewPos].HasMoved = true;
+            }
+            else
+            {
+                Board[move.NewPosition] = Board[move.OldPosition];
+                Board[move.OldPosition] = null;
+                Board[move.NewPosition].HasMoved = true;
+            }
+        }
+
+        public void MoveKingForValidation(Move move)
+        {
             Board[move.NewPosition] = Board[move.OldPosition];
             Board[move.OldPosition] = null;
-            Board[move.NewPosition].HasMoved = true;
         }
 
         public AChessPiece? GetChessPiece(Position position)
         {
             return Board[position];
+        }
+
+        public Dictionary<Position, AChessPiece?> GetChessBoard()
+        {
+            return Board;
         }
 
         public bool MoveExposesKing(Move move, Color chessPieceColor)
@@ -93,6 +121,40 @@ namespace console_chess.Board
 
             return moveExposesKing;
         }
+
+        public bool CastlingExposesKing(Move kingMove, Color chessPieceColor)
+        {
+            bool moveExposesKing = false;
+            Dictionary<Position, AChessPiece?> currentBoard = Board;
+            
+            try
+            {
+                // Move the King & Rook to the new positions
+                Board[kingMove.NewPosition] = Board[kingMove.OldPosition];
+                Board[kingMove.OldPosition] = null;
+                Position rookOldPos = AlphabetIndex.GetIndexDiff(kingMove) < 0 ? (Position)((int)kingMove.OldPosition - 4) : (Position)((int)kingMove.OldPosition + 3);
+                Position rookNewPos = AlphabetIndex.GetIndexDiff(kingMove) < 0 ? (Position)((int)kingMove.NewPosition + 1) : (Position)((int)kingMove.NewPosition - 1);
+                Board[rookNewPos] = Board[rookOldPos];
+                Board[rookOldPos] = null;
+
+                // Check if the move would leave own king exposed
+                moveExposesKing = IsCheck(chessPieceColor.Equals(Color.White) ? Color.Black : Color.White);
+
+                // Move chess pieces back to their original positions
+                Board[kingMove.OldPosition] = Board[kingMove.NewPosition];
+                Board[kingMove.NewPosition] = null;
+                Board[rookOldPos] = Board[rookNewPos];
+                Board[rookNewPos] = null;
+            }
+            catch (Exception ex)
+            {
+                //FileLogger.Log("MoveExposesKing:\nError: " + ex.Message);
+                Board = currentBoard;
+            }
+            
+            return moveExposesKing;
+        }
+
 
         public void DisplayPossibleMoves(ChosenMove chosenMove)
         {
@@ -184,7 +246,7 @@ namespace console_chess.Board
 
                     if (piece != null && piece.Color != currentPlayerColor)
                     {
-                        if (pos.Value.ListValidMoves(pos.Value?.ListPossibleMoves(pos.Key)).Count > 0)
+                        if (piece.ListValidMoves(piece.ListPossibleMoves(pos.Key)).Count > 0)
                         {
                             return false;
                         }
