@@ -9,12 +9,24 @@ using System.Threading.Tasks;
 
 namespace console_chess.Players
 {
+    /// <summary>
+    /// Class for AI player
+    /// </summary>
     public class ArtificalPlayer : APlayer
     {
+        /// <summary>
+        /// Inherent constructor
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="color"></param>
         public ArtificalPlayer(string name, Color color) : base(name, color)
         {
         }
 
+        /// <summary>
+        /// TODO: Make more of an AI, currently just random move.
+        /// </summary>
+        /// <returns>ChosenMove object</returns>
         public override ChosenMove ChoosePieceToMove()
         {
             Position chosenPosition;
@@ -40,20 +52,23 @@ namespace console_chess.Players
                 }
                 catch(Exception ex)
                 {
-                    //FileLogger.Log("ChoosePieceToMove (AI):\nError: " + ex.Message);
+                    // zzzz
                 }
             }
             
-            FileLogger.Log($"Valid moves ({this.Color}, {ChessBoard.Instance().GetChessPiece(chosenPosition).Name}):\n{String.Join("\n",possibleMoves.Select(move => $"{move.OldPosition} to {move.NewPosition}"))}");
+            FileLogger.Log($"Valid moves ({this.Color}, {ChessBoard.Instance().GetChessPiece(chosenPosition)?.Name}):\n{String.Join("\n",possibleMoves.Select(move => $"{move.OldPosition} to {move.NewPosition}"))}");
             return new ChosenMove(chosenPosition, possibleMoves);
         }
 
+        /// <summary>
+        /// Moves the chess piece chosen on the chess board.
+        /// </summary>
+        /// <param name="move">ChosenMove object</param>
         public override void MoveChessPiece(ChosenMove move)
         {
-            Position newPosition = move.PossibleMoves.First().NewPosition;
+            Position newPosition = move.PossibleMoves[0].NewPosition;
             ChessBoard.Instance().MoveChessPiece(new Move(move.ChosenChessPiecePosition, newPosition));
             FileLogger.Log($"{this.Color} moved {move.ChosenChessPiecePosition} to {newPosition}");
-
         }
     }
 }

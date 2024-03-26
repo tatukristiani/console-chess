@@ -6,11 +6,15 @@ using Serilog.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace console_chess.Board
 {
+    /// <summary>
+    /// Singleton class that represents the chess board
+    /// </summary>
     public class ChessBoard
     {
         private static ChessBoard? instance;
@@ -18,6 +22,7 @@ namespace console_chess.Board
         
         private ChessBoard()
         {
+            // Populates the chess board
             this.Board = Populate();
         }
 
@@ -29,6 +34,11 @@ namespace console_chess.Board
             }
 
             return instance;
+        }
+
+        public void ResetChessBoard()
+        {
+            instance = new ChessBoard();
         }
 
         private Dictionary<Position, AChessPiece?> Populate()
@@ -52,38 +62,79 @@ namespace console_chess.Board
             this.Board = Populate();
         }
 
-        /**************** Chess Board Logic ***************/
-
+        /// <summary>
+        /// Methos that will move the chess piece to a new position.
+        /// Handles also castling and transforming Pawn into a Queen.
+        /// </summary>
+        /// <param name="move"></param>
         public void MoveChessPiece(Move move)
         {
             // Check if King & castling move
             AChessPiece? pieceToMove = Board[move.OldPosition];
-            if (pieceToMove.GetType().Equals(typeof(King)) && AlphabetIndex.GetAbsoluteIndexDiff(move) == 2)
-            {
-                Board[move.NewPosition] = Board[move.OldPosition];
-                Board[move.OldPosition] = null;
-                Position rookOldPos = AlphabetIndex.GetIndexDiff(move) < 0 ? move.OldPosition - 4 : move.OldPosition + 3;
-                Position rookNewPos = AlphabetIndex.GetIndexDiff(move) < 0 ? move.NewPosition + 1 : move.NewPosition - 1;
-                Board[rookNewPos] = Board[rookOldPos];
-                Board[rookOldPos] = null;
 
-                Board[move.NewPosition].HasMoved = true;
-                Board[rookNewPos].HasMoved = true;
-            }
-            else
+            if (pieceToMove != null)
             {
-                Board[move.NewPosition] = Board[move.OldPosition];
-                Board[move.OldPosition] = null;
-                Board[move.NewPosition].HasMoved = true;
+                if (pieceToMove.GetType().Equals(typeof(King)) && AlphabetIndex.GetAbsoluteIndexDiff(move) == 2)
+                {
+                    Board[move.NewPosition] = Board[move.OldPosition];
+                    Board[move.OldPosition] = null;
+                    Position rookOldPos = AlphabetIndex.GetIndexDiff(move) < 0 ? move.OldPosition - 4 : move.OldPosition + 3;
+                    Position rookNewPos = AlphabetIndex.GetIndexDiff(move) < 0 ? move.NewPosition + 1 : move.NewPosition - 1;
+                    Board[rookNewPos] = Board[rookOldPos];
+                    Board[rookOldPos] = null;
+
+                    Board[move.NewPosition].HasMoved = true;
+                    Board[rookNewPos].HasMoved = true;
+                }
+                else if (pieceToMove.GetType().Equals(typeof(Pawn)) && PawnMovedToFinalRow(move))
+                {
+                    Board[move.NewPosition] = new Queen(pieceToMove.Color);
+                    Board[move.OldPosition] = null;
+                    Board[move.NewPosition].HasMoved = true;
+                }
+                else
+                {
+                    Board[move.NewPosition] = Board[move.OldPosition];
+                    Board[move.OldPosition] = null;
+                    Board[move.NewPosition].HasMoved = true;
+                }
             }
         }
 
+        /// <summary>
+        /// Method that will check if the Pawn in the move.OldPosition is going to move to the final row.
+        /// </summary>
+        /// <param name="move">Move to be made by the Pawn</param>
+        /// <returns>true when Pawn is about to move to the final row, false otherwise</returns>
+        private bool PawnMovedToFinalRow(Move move)
+        {
+            Color pawnColor = Board[move.OldPosition].Color;
+
+            if(pawnColor.Equals(Color.White))
+            {
+                return PositionHelper.IsOnTopRow(move.NewPosition);
+            }
+            else
+            {
+                return PositionHelper.IsOnBottomRow(move.NewPosition);
+            }
+        }
+
+        /// <summary>
+        /// Method that is used to move king only for validation purposes.
+        /// </summary>
+        /// <param name="move">Move to be made</param>
         public void MoveKingForValidation(Move move)
         {
             Board[move.NewPosition] = Board[move.OldPosition];
             Board[move.OldPosition] = null;
         }
 
+        /// <summary>
+        /// Method that returns the AChessPiece on the given Position
+        /// </summary>
+        /// <param name="position">Position of the chess piece that is wanted</param>
+        /// <returns>AChessPiece object instance or null when no chess piece was found from the Position</returns>
         public AChessPiece? GetChessPiece(Position position)
         {
             return Board[position];
@@ -94,6 +145,12 @@ namespace console_chess.Board
             return Board;
         }
 
+        /// <summary>
+        /// Method that confirms whether the move will expose own king or not.
+        /// </summary>
+        /// <param name="move">Move to be validated</param>
+        /// <param name="chessPieceColor">Color of the chess piece to be moved</param>
+        /// <returns>true when move exposes king, false otherwise</returns>
         public bool MoveExposesKing(Move move, Color chessPieceColor)
         {
             bool moveExposesKing = false;
@@ -115,13 +172,19 @@ namespace console_chess.Board
             }
             catch (Exception ex)
             {
-                //FileLogger.Log("MoveExposesKing:\nError: " + ex.Message);
+                // something went wrong :(
                 Board = currentBoard;
             }
 
             return moveExposesKing;
         }
 
+        /// <summary>
+        /// Method that is used to confirm whether castling will expose king or not.
+        /// </summary>
+        /// <param name="kingMove">Move to be made by the king</param>
+        /// <param name="chessPieceColor">Color of the king</param>
+        /// <returns>true when castling exposes king, false otherwise</returns>
         public bool CastlingExposesKing(Move kingMove, Color chessPieceColor)
         {
             bool moveExposesKing = false;
@@ -148,19 +211,27 @@ namespace console_chess.Board
             }
             catch (Exception ex)
             {
-                //FileLogger.Log("MoveExposesKing:\nError: " + ex.Message);
+                // can't do dat
                 Board = currentBoard;
             }
             
             return moveExposesKing;
         }
 
-
+        /// <summary>
+        /// Prints out the current board status with highlighted positions for the possible moves
+        /// </summary>
+        /// <param name="chosenMove"></param>
         public void DisplayPossibleMoves(ChosenMove chosenMove)
         {
             PrintCurrentBoardStatus(chosenMove);
         }
 
+        /// <summary>
+        /// Prints out the current chess board status.
+        /// ChosenMove object can be given to highlight possible moves.
+        /// </summary>
+        /// <param name="chosenMove">ChosenMove object when possible moves should be highlighted</param>
         public void PrintCurrentBoardStatus(ChosenMove? chosenMove)
         {
             int rowCount = 8;
@@ -213,7 +284,11 @@ namespace console_chess.Board
             Console.WriteLine("     A      B      C      D      E      F      G      H   ");
         }
 
-
+        /// <summary>
+        /// Method that will confirm whether the player of the currentPlayerColor has checked the other player.
+        /// </summary>
+        /// <param name="currentPlayerColor">Current player color</param>
+        /// <returns>true when the player of the currentTurnPlayer color has checked the other player, false otherwise</returns>
         public bool IsCheck(Color currentPlayerColor)
         {
             Position enemyKingPosition = GetKingPosition(currentPlayerColor.Equals(Color.White) ? Color.Black : Color.White);
@@ -235,6 +310,11 @@ namespace console_chess.Board
             return false;
         }
 
+        /// <summary>
+        /// Method that will check for checkmate.
+        /// </summary>
+        /// <param name="currentPlayerColor">Color of the current player</param>
+        /// <returns>truen when the player of the currentPlayerColor has won the game, false otherwise</returns>
         public bool IsCheckMate(Color currentPlayerColor)
         {
             // Check if the other player could move any pieces
@@ -261,6 +341,11 @@ namespace console_chess.Board
             return true;
         }
 
+        /// <summary>
+        /// Method to get the King position.
+        /// </summary>
+        /// <param name="color">Color of the king to retrieve</param>
+        /// <returns>Position enum which will tell the position of the king</returns>
         private Position GetKingPosition(Color color)
         {
             return Board.Where(pos => pos.Value != null && pos.Value.GetType().Equals(typeof(King)) && pos.Value.Color.Equals(color)).First().Key;

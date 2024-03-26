@@ -3,17 +3,18 @@ using console_chess.Board;
 using console_chess.Game;
 using System.Text;
 using console_chess.Players;
+using console_chess.Utility;
 
 namespace console_chess
 {
-    internal class Program
+    public class Program
     {
         static void Main(string[] args)
         {
-            
             Console.OutputEncoding = Encoding.Unicode;
             Console.ForegroundColor = ConsoleColor.White;
-            AGame? game = null;
+
+            AGame ? game = null;
             string? gameMode;
 
             while (true)
@@ -30,6 +31,7 @@ namespace console_chess
                     }
                 }
 
+                ChessBoard.Instance().ResetChessBoard();
                 if (gameMode.Equals("PvP", StringComparison.OrdinalIgnoreCase))
                 {
                     game = new PlayerVsPlayerGame();
@@ -41,7 +43,6 @@ namespace console_chess
 
                 game?.StartGame();
             }
-            
         }
     }
 }

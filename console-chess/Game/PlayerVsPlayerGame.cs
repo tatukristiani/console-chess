@@ -10,18 +10,30 @@ using System.Threading.Tasks;
 
 namespace console_chess.Game
 {
+    /// <summary>
+    /// Class for Player vs. Player
+    /// </summary>
     public class PlayerVsPlayerGame : AGame
     {
+
+        /// <summary>
+        /// Empty constructor
+        /// </summary>
         public PlayerVsPlayerGame() : base()
         {
+            // Initialize chessboard
+            ChessBoard.Instance();
         }
 
+        /// <summary>
+        /// Method for starting the game. Game goes on until the end.
+        /// </summary>
         public override void StartGame()
         {
             // Create players
             CreatePlayers();
 
-            // Start game until it ends
+            // Play until checkmate
             while (true)
             {
                 // Update chess board
@@ -64,6 +76,9 @@ namespace console_chess.Game
             }
         }
 
+        /// <summary>
+        /// Creates the players
+        /// </summary>
         private void CreatePlayers()
         {
             base.PlayerOne = CreatePlayer(Color.White);
@@ -71,6 +86,11 @@ namespace console_chess.Game
             base.CurrentTurnPlayer = base.PlayerOne;
         }
 
+        /// <summary>
+        /// Method to create the player object. User picks a name and the first user will be using white pieces.
+        /// </summary>
+        /// <param name="color">Color of the player/pieces</param>
+        /// <returns>APlayer object, concrete class is RealPlayer</returns>
         private APlayer CreatePlayer(Color color)
         {
             while(true)
@@ -89,6 +109,9 @@ namespace console_chess.Game
             }
         }
 
+        /// <summary>
+        ///  Method for the player to make a move. Player selects a piece to move, possible positions will be displayed and finally the player finalizes the move.
+        /// </summary>
         public override void PlayerMakeMove()
         {
             /**** Get a valid chess piece to move ****/

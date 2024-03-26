@@ -68,7 +68,7 @@ namespace console_chess.ChessPieces
                 }
                 catch (Exception ex)
                 {
-                    //FileLogger.Log("ListValidMoves:\nError: " + ex.Message);
+                    //no valid moves for you
                 }
             }
 
@@ -86,7 +86,7 @@ namespace console_chess.ChessPieces
             }
             catch(Exception ex)
             {
-               // FileLogger.Log("CanMoveUp (King):\nError: " + ex.Message);
+                //no valid moves for you
             }
 
             return false;
@@ -103,7 +103,7 @@ namespace console_chess.ChessPieces
             }
             catch (Exception ex)
             {
-                //FileLogger.Log("CanMoveDown (King):\nError: " + ex.Message);
+                //no valid moves for you
             }
 
             return false;
@@ -123,7 +123,7 @@ namespace console_chess.ChessPieces
             }
             catch (Exception ex)
             {
-                //FileLogger.Log("CanMoveDown (King):\nError: " + ex.Message);
+                //no valid moves for you
             }
 
             return false;
@@ -143,7 +143,7 @@ namespace console_chess.ChessPieces
             }
             catch (Exception ex)
             {
-               // FileLogger.Log("CanMoveDown (King):\nError: " + ex.Message);
+                //no valid moves for you
             }
 
             return false;

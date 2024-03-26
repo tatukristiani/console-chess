@@ -51,7 +51,7 @@ namespace console_chess.ChessPieces
                 }
                 catch (Exception ex)
                 {
-                    //FileLogger.Log("ListValidMoves:\nError: " + ex.Message);
+                    //no valid moves for you
                 }
             }
 

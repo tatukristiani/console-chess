@@ -27,8 +27,18 @@ namespace console_chess.ChessPieces
             Color = color;
         }
 
+        /// <summary>
+        /// Abstract method that will list possible moves. Note! Not neccessarily valid moves.
+        /// </summary>
+        /// <param name="originalPos"></param>
+        /// <returns></returns>
         public abstract List<Move> ListPossibleMoves(Position originalPos);
 
+        /// <summary>
+        /// Abstract method that will list valid moves out of the given possible moves.
+        /// </summary>
+        /// <param name="possibleMoves"></param>
+        /// <returns></returns>
         public abstract List<Move> ListValidMoves(List<Move> possibleMoves);
     }
 }
