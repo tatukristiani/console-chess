@@ -125,7 +125,7 @@ namespace console_chess.Board
         /// </summary>
         /// <param name="move">Move to be made</param>
         public void MoveKingForValidation(Move move)
-        {
+        { 
             Board[move.NewPosition] = Board[move.OldPosition];
             Board[move.OldPosition] = null;
         }
